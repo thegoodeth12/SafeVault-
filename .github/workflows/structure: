@@ -1,0 +1,4 @@
+.github/
+├── SAFE-Dashboard/
+│   ├── index.html
+│   └── proposals.json (auto-updated)
