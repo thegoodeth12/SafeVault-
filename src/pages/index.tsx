@@ -1,11 +1,9 @@
 // src/pages/index.tsx
-import React from 'react';
-
 export default function Home() {
   return (
-    <div style={{ padding: '2rem' }}>
-      <h1>🔐 Gnosis Vault Dashboard</h1>
-      <p>Welcome to your custom Safe Wallet frontend.</p>
+    <div style={{ padding: 20 }}>
+      <h1>🔐 Safe Vault Dashboard</h1>
+      <p>This Safe App is mobile-ready and GitHub-linked.</p>
     </div>
   );
 }
