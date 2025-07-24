@@ -1,0 +1,4 @@
+SafeVault-DashboardSync/
+├── .github/workflows/dashboard-sync.yml   # GitHub Action
+├── scripts/fetchProposals.js              # Pull data from Reown
+└── SAFE-Dashboard/proposals.json          # Dashboard data source
