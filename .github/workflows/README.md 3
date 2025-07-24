@@ -1,0 +1,29 @@
+# 🏷 Label-Based Safe Proposal Trigger
+
+## 🚀 What it does:
+When a pull request is labeled `safe-proposal`, this action:
+
+1. Triggers a Safe transaction proposal automatically.
+2. Uses Reown to submit the tx to your Safe.
+3. Logs output to GitHub Actions.
+
+## 📥 Default Behavior:
+Proposes:
+- 0.1 ETH
+- To `0x742d...` (update this in the script)
+- With description: `Auto-proposed via label on PR #`
+
+## 🔐 Secrets Required:
+| Name | Description |
+|------|-------------|
+| `SAFE_ADDRESS` | Your Safe address |
+| `SAFE_RPC_URL` | Mainnet/Arbitrum RPC URL |
+| `REOWN_API_KEY` | From Reown |
+| `GITHUB_TOKEN` | GitHub Actions default |
+
+## 🧪 Usage:
+1. Push a PR.
+2. Label it with `safe-proposal`.
+3. Action runs and proposes the tx!
+
+✅ You can customize the amount, recipient, and logic later.
