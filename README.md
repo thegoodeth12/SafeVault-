@@ -43,13 +43,14 @@ Visual viewer of Safe activity
 ✅ GitHub Secrets
 Keeps sensitive keys secure
 🔐 Gnosis Safe Support
-Can be deployed to Ethereum or Arbitrum
+Can be deployed to Ethereum or Arbitru
 
 🔮 Roadmap (Optional Enhancements)
-	•	✅ Telegram bot + Webhook signer alerts
-	•	✅ Slack & GitHub PR ↔ Safe proposal sync
-	•	✅ Admin interface to approve/reject txs
-	•	✅ Analytics on tx status / gas
+
+✅ Telegram bot + Webhook signer alerts
+✅ Slack & GitHub PR ↔ Safe proposal sync
+✅ Admin interface to approve/reject txs
+✅ Analytics on tx status / gas
 
 🧪 Development Commands (if using frontend)
 # Install dependencies
@@ -59,10 +60,10 @@ npm install
 npm run dev
 
 🧬 References
-	•	Safe SDK
-	•	Reown
-	•	AppKit Safe Frontend
-	•	Safe UI Examples
+•Safe SDK
+•Reown
+•AppKit Safe Frontend
+•Safe UI Examples
 
 💼 Maintained by SafeVault DAO
 
