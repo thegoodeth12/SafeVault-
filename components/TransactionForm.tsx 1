@@ -1,0 +1,45 @@
+'use client'
+import { useState } from 'react'
+import { ethers } from 'ethers'
+import { getSafeClient } from '@/lib/safeClient'
+
+export default function TransactionForm() {
+  const [to, setTo] = useState('')
+  const [value, setValue] = useState('')
+  const [txHash, setTxHash] = useState('')
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    const provider = new ethers.providers.Web3Provider(window.ethereum)
+    const { safeSdk } = await getSafeClient(provider)
+
+    const txData = {
+      to,
+      data: '0x', // basic ETH transfer
+      value: ethers.utils.parseEther(value).toString(),
+    }
+
+    const safeTx = await safeSdk.createTransaction({ safeTransactionData: txData })
+    const executeTx = await safeSdk.executeTransaction(safeTx)
+    const receipt = await executeTx.transactionResponse?.wait()
+
+    setTxHash(receipt?.transactionHash || '')
+  }
+
+  return (
+    <form onSubmit={handleSubmit} style={{ padding: '1rem' }}>
+      <h2>📝 Create Transaction</h2>
+      <label>Recipient Address:</label><br />
+      <input value={to} onChange={(e) => setTo(e.target.value)} required /><br />
+
+      <label>ETH Amount:</label><br />
+      <input value={value} onChange={(e) => setValue(e.target.value)} required /><br /><br />
+
+      <button type="submit">Submit to Safe</button>
+
+      {txHash && (
+        <p>✅ Tx Submitted: <a href={`https://etherscan.io/tx/${txHash}`} target="_blank">{txHash}</a></p>
+      )}
+    </form>
+  )
+}
