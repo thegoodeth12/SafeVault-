@@ -1,0 +1,35 @@
+name: 🔄 Sync Safe Proposals for Dashboard
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+jobs:
+  sync-proposals:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install node-fetch@2
+
+      - name: Fetch proposals and update dashboard
+        env:
+          SAFE_ADDRESS: ${{ secrets.SAFE_ADDRESS }}
+          REOWN_API_KEY: ${{ secrets.REOWN_API_KEY }}
+        run: node scripts/fetchProposals.js
+
+      - name: Commit updated proposals
+        run: |
+          git config --global user.email "bot@safe.com"
+          git config --global user.name "SafeVault Dashboard Bot"
+          git add SAFE-Dashboard/proposals.json || true
+          git commit -m "🔄 Update dashboard proposals" || echo "No changes to commit"
+          git push || echo "No push needed"
