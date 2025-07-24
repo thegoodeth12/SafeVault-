@@ -1,0 +1,19 @@
+name: 🚨 Send Telegram Alert
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - README.md
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Send Telegram Notification
+        run: |
+          curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage \
+            -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
+            -d text="✅ SafeVault: README.md was just updated from GitHub Action!"
