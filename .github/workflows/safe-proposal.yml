@@ -1,0 +1,116 @@
+# Create the base folder
+base_path = Path("/mnt/data/SafeVault-GitHub-Proposal")
+scripts_path = base_path / "scripts"
+workflows_path = base_path / ".github" / "workflows"
+scripts_path.mkdir(parents=True, exist_ok=True)
+workflows_path.mkdir(parents=True, exist_ok=True)
+
+# 1. GitHub Workflow: .github/workflows/safe-proposal.yml
+workflow_content = """
+name: 🔐 Propose Safe Transaction on PR
+
+on:
+  pull_request:
+    types: [opened]
+
+jobs:
+  propose-safe-transaction:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install Dependencies
+        run: npm install node-fetch@2
+
+      - name: Run Safe Proposal Script
+        env:
+          SAFE_ADDRESS: ${{ secrets.SAFE_ADDRESS }}
+          SAFE_RPC_URL: ${{ secrets.SAFE_RPC_URL }}
+          REOWN_API_KEY: ${{ secrets.REOWN_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/createSafeProposal.js
+"""
+
+(workflows_path / "safe-proposal.yml").write_text(workflow_content.strip())
+
+# 2. Script: scripts/createSafeProposal.js
+proposal_script = """
+const fetch = require("node-fetch");
+
+const safeAddress = process.env.SAFE_ADDRESS;
+const rpcUrl = process.env.SAFE_RPC_URL;
+const apiKey = process.env.REOWN_API_KEY;
+
+const createProposal = async () => {
+  const tx = {
+    to: "0x0000000000000000000000000000000000000000",
+    value: "0",
+    data: "0x",
+    operation: 0,
+  };
+
+  console.log("🔐 Proposing Safe transaction via Reown...");
+
+  const res = await fetch("https://api.reown.com/safe/propose", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${apiKey}`
+    },
+    body: JSON.stringify({
+      safeAddress,
+      rpcUrl,
+      tx,
+      description: "Auto-generated proposal from GitHub PR"
+    })
+  });
+
+  const data = await res.json();
+  if (res.ok) {
+    console.log("✅ Proposal created:", data);
+  } else {
+    console.error("❌ Failed to create proposal:", data);
+  }
+};
+
+createProposal();
+"""
+
+(scripts_path / "createSafeProposal.js").write_text(proposal_script.strip())
+
+# Create a README stub for instructions
+readme = """
+# 🔁 SafeVault: GitHub → Safe Proposal Automation
+
+## ✅ What It Does
+- When a Pull Request is opened, it automatically proposes a Safe transaction using Reown MPC.
+
+## 🛠 Setup
+Create GitHub Actions secrets:
+
+- `SAFE_ADDRESS`: Your Safe wallet address
+- `SAFE_RPC_URL`: Arbitrum RPC (e.g. from Alchemy or Ankr)
+- `REOWN_API_KEY`: Reown bot access key
+- `GITHUB_TOKEN`: Default GitHub token (pre-provided)
+
+## 📁 Files
+- `.github/workflows/safe-proposal.yml`: GitHub automation trigger
+- `scripts/createSafeProposal.js`: Proposal logic
+"""
+
+(base_path / "README.md").write_text(readme.strip())
+
+# Zip it up
+zip_path = Path("/mnt/data/SafeVault-GitHub-Proposal.zip")
+with ZipFile(zip_path, "w") as zipf:
+    for file in base_path.rglob("*"):
+        if file.is_file():
+            zipf.write(file, file.relative_to(base_path))
+
+zip_path.name
