@@ -1,0 +1,15 @@
+{
+  "name": "gnosis-vault",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "next": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "@safe-global/safe-core-sdk": "^7.4.0",
+    "ethers": "^6.0.0"
+  }
+}
