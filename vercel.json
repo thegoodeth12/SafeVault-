@@ -1,8 +1,25 @@
 {
-  "rewrites": [
-    { "source": "/SAFE-Dashboard/(.*)", "destination": "/SAFE-Dashboard/$1" }
+  "version": 2,
+  "builds": [
+    {
+      "src": "next.config.js",
+      "use": "@vercel/next"
+    }
   ],
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
-  "framework": "nextjs"
+  "rewrites": [
+    {
+      "source": "/SAFE-Dashboard/(.*)",
+      "destination": "/SAFE-Dashboard/$1"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/app/$1"
+    }
+  ],
+  "env": {
+    "SAFE_ADDRESS": "@safe_address",
+    "REOWN_API_KEY": "@reown_api_key"
+  }
 }
