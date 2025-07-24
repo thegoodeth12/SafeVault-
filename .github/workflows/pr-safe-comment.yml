@@ -20,6 +20,6 @@ jobs:
 
       - name: Comment Safe Status
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ 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 }}
           SAFE_ADDRESS: 0xAfD5f60aA8eb4F488eAA0eF98c1C5B0645D9A0A0
         run: node scripts/commentSafeStatus.js
