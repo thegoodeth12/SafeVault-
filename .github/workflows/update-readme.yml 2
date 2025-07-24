@@ -1,0 +1,16 @@
+name: 📝 Update Safe README
+
+on:
+  schedule:
+    - cron: "0 * * * *"  # Hourly update
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Update README with Safe info
+        run: |
+          echo "🔄 Updating README..."
+          # Placeholder for TypeScript/Node script
