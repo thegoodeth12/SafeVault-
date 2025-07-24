@@ -1,16 +1,20 @@
-# 🔁 SafeVault: GitHub → Safe Proposal Automation
+# 💬 GitHub Comment → Safe Proposal
 
-## ✅ What It Does
-- When a Pull Request is opened, it automatically proposes a Safe transaction using Reown MPC.
+This setup lets you create Safe proposals by commenting on PRs/issues.
 
-## 🛠 Setup
-Create GitHub Actions secrets:
+## 💬 Format:
+```
+/propose-transfer 0xRecipientAddress 100
+```
 
-- `SAFE_ADDRESS`: Your Safe wallet address
-- `SAFE_RPC_URL`: Arbitrum RPC (e.g. from Alchemy or Ankr)
-- `REOWN_API_KEY`: Reown bot access key
-- `GITHUB_TOKEN`: Default GitHub token (pre-provided)
+## 📁 Files:
+- `.github/workflows/comment-trigger.yml`: GitHub Action trigger
+- `scripts/parseCommentProposal.js`: Parses and submits to Reown
 
-## 📁 Files
-- `.github/workflows/safe-proposal.yml`: GitHub automation trigger
-- `scripts/createSafeProposal.js`: Proposal logic
+## 🛠 Required Secrets:
+- `SAFE_ADDRESS`
+- `SAFE_RPC_URL`
+- `REOWN_API_KEY`
+- `GITHUB_TOKEN`
+
+Deploy and test by commenting on a PR in your repo.
