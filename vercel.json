@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    { "source": "/SAFE-Dashboard/(.*)", "destination": "/SAFE-Dashboard/$1" }
+  ],
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "framework": "nextjs"
+}
