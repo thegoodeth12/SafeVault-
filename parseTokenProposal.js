@@ -1,0 +1,64 @@
+const fetch = require("node-fetch");
+
+const comment = process.env.COMMENT_BODY;
+const safeAddress = process.env.SAFE_ADDRESS;
+const rpcUrl = process.env.SAFE_RPC_URL;
+const apiKey = process.env.REOWN_API_KEY;
+
+const ethers = require("ethers");
+
+// Predefined Ethereum mainnet token list
+const tokenList = {
+  USDC: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eb48",
+  WETH: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+};
+
+const ERC20_ABI = ["function transfer(address to, uint256 amount)"];
+
+const parseComment = (input) => {
+  const parts = input.trim().split(/\s+/);
+  if (parts.length !== 4) throw new Error("Invalid format. Use /propose-token SYMBOL 0xTo 100");
+  const [, symbol, to, amount] = parts;
+  return { symbol, to, amount };
+};
+
+(async () => {
+  try {
+    const { symbol, to, amount } = parseComment(comment);
+    const token = tokenList[symbol.toUpperCase()];
+    if (!token) throw new Error("Unsupported token symbol");
+
+    const iface = new ethers.utils.Interface(ERC20_ABI);
+    const data = iface.encodeFunctionData("transfer", [to, ethers.utils.parseUnits(amount, 6)]); // USDC has 6 decimals
+
+    const tx = {
+      to: token,
+      value: "0",
+      data,
+      operation: 0,
+    };
+
+    const response = await fetch("https://api.reown.com/safe/propose", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        safeAddress,
+        rpcUrl,
+        tx,
+        description: `Send ${amount} ${symbol.toUpperCase()} to ${to}`,
+      }),
+    });
+
+    const res = await response.json();
+    if (response.ok) {
+      console.log("✅ Token proposal created:", res);
+    } else {
+      console.error("❌ Proposal failed:", res);
+    }
+  } catch (err) {
+    console.error("❌ Error:", err.message);
+  }
+})();

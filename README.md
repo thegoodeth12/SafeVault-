@@ -1,20 +1,20 @@
-# 💬 GitHub Comment → Safe Proposal
+# 💬 GitHub Comment: Token Transfer Proposal (Ethereum)
 
-This setup lets you create Safe proposals by commenting on PRs/issues.
+## 🔁 Format:
+/propose-token USDC 0xRecipientAddress 100
 
-## 💬 Format:
-```
-/propose-transfer 0xRecipientAddress 100
-```
+✅ Automatically creates a Safe proposal via Reown to transfer tokens (on Ethereum mainnet).
 
-## 📁 Files:
-- `.github/workflows/comment-trigger.yml`: GitHub Action trigger
-- `scripts/parseCommentProposal.js`: Parses and submits to Reown
+## 🧠 Supported Tokens (Ethereum):
+- USDC
+- WETH
 
-## 🛠 Required Secrets:
+## 📁 Files
+- `.github/workflows/token-transfer.yml` — GitHub Action trigger
+- `scripts/parseTokenProposal.js` — Parses + sends transaction
+
+## 🔒 Required GitHub Secrets:
 - `SAFE_ADDRESS`
 - `SAFE_RPC_URL`
 - `REOWN_API_KEY`
 - `GITHUB_TOKEN`
-
-Deploy and test by commenting on a PR in your repo.
