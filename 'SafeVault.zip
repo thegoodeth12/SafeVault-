@@ -1,0 +1,130 @@
+from zipfile import ZipFile
+from pathlib import Path
+
+# Define project structure and file contents
+project_root = Path("/mnt/data/SafeVault")
+structure = {
+    ".github/workflows/update-readme.yml": """
+name: 📝 Update Safe README
+
+on:
+  schedule:
+    - cron: "0 * * * *"
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Update README with Safe info
+        run: echo "🔄 This is where the update script would run."
+""",
+    "public/favicon.ico": "",  # placeholder for favicon
+    "src/pages/index.tsx": """
+export default function Home() {
+  return (
+    <div style={{ padding: 20 }}>
+      <h1>🔐 Gnosis Vault Dashboard</h1>
+      <p>This Safe App is mobile-ready and GitHub-linked.</p>
+    </div>
+  );
+}
+""",
+    "src/utils/safe.ts": """
+export async function getSafeDetails(safeAddress: string) {
+  return {
+    address: safeAddress,
+    threshold: 2,
+    owners: ["0x...", "0x..."],
+  };
+}
+""",
+    "scripts/project-setup.ts": """
+console.log("Setup script for SafeWallet 🔐");
+""",
+    "README.md": """
+# 🔐 Gnosis-vault
+
+Welcome to your custom Safe{Wallet} Dashboard, designed for secure multi-sig management with real-time GitHub + Safe integrations.
+
+## ⚡ Live App
+[Vercel App Live Link](https://your-vercel-app.vercel.app)
+
+## 🧠 Features
+- Multisig-safe dashboard
+- Proposal view + README updater
+- GitHub Actions + webhook support
+- Mobile-friendly PWA setup
+
+## 🔧 Safe Info
+- Address: `0xAfD5f60aA8eb4F488eAA0eF98c1C5B0645D9A0A0`
+- Chain: Arbitrum
+""",
+    "package.json": """
+{
+  "name": "gnosis-vault",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "next": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "@safe-global/safe-core-sdk": "^7.4.0",
+    "ethers": "^6.0.0"
+  }
+}
+""",
+    "next.config.js": """
+const nextConfig = {
+  reactStrictMode: true,
+};
+
+module.exports = nextConfig;
+""",
+    "tsconfig.json": """
+{
+  "compilerOptions": {
+    "target": "es5",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": false,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve"
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules"]
+}
+""",
+    ".env.example": """
+SAFE_ADDRESS=0xAfD5f60aA8eb4F488eAA0eF98c1C5B0645D9A0A0
+CHAIN_ID=42161
+VERCEL_PROJECT_NAME=gnosis-vault
+"""
+}
+
+# Create files
+for file_path, content in structure.items():
+    full_path = project_root / file_path
+    full_path.parent.mkdir(parents=True, exist_ok=True)
+    full_path.write_text(content.strip())
+
+# Create the ZIP file
+zip_path = Path("/mnt/data/SafeVault.zip")
+with ZipFile(zip_path, "w") as zipf:
+    for file in project_root.rglob("*"):
+        if file.is_file():
+            zipf.write(file, file.relative_to(project_root))
+
+zip_path.name  # return only the name of the zip file for download
