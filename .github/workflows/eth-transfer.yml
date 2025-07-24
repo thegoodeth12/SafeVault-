@@ -1,0 +1,129 @@
+# GitHub Action: eth-transfer.yml
+workflow = """
+name: 💬 ETH Transfer Proposal
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  propose-eth:
+    if: startsWith(github.event.comment.body, '/propose-eth')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install Dependencies
+        run: npm install node-fetch@2 ethers@5
+
+      - name: Propose ETH Transfer
+        env:
+          SAFE_ADDRESS: ${{ secrets.SAFE_ADDRESS }}
+          SAFE_RPC_URL: ${{ secrets.SAFE_RPC_URL }}
+          REOWN_API_KEY: ${{ secrets.REOWN_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COMMENT_BODY: ${{ github.event.comment.body }}
+          COMMENT_URL: ${{ github.event.comment.url }}
+        run: node scripts/proposeETHTransfer.js
+"""
+
+(workflows_path / "eth-transfer.yml").write_text(workflow.strip())
+
+# ETH transfer script: proposeETHTransfer.js
+script = """
+const fetch = require("node-fetch");
+const { ethers } = require("ethers");
+
+const comment = process.env.COMMENT_BODY;
+const commentUrl = process.env.COMMENT_URL;
+const safeAddress = process.env.SAFE_ADDRESS;
+const rpcUrl = process.env.SAFE_RPC_URL;
+const apiKey = process.env.REOWN_API_KEY;
+const githubToken = process.env.GITHUB_TOKEN;
+
+const parseComment = (input) => {
+  const parts = input.trim().split(/\\s+/);
+  if (parts.length !== 3) throw new Error("Format: /propose-eth 0xRecipient 0.5");
+  const [, to, amount] = parts;
+  return { to, amount };
+};
+
+(async () => {
+  try {
+    const { to, amount } = parseComment(comment);
+    const ethValue = ethers.utils.parseEther(amount);
+
+    const tx = {
+      to,
+      value: ethValue.toString(),
+      data: "0x",
+      operation: 0,
+    };
+
+    const response = await fetch("https://api.reown.com/safe/propose", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        safeAddress,
+        rpcUrl,
+        tx,
+        description: `Send ${amount} ETH to ${to}`,
+      }),
+    });
+
+    const res = await response.json();
+    let message;
+    if (response.ok) {
+      const explorerUrl = `https://app.safe.global/transactions/queue?safe=${safeAddress}`;
+      message = `✅ **ETH Proposal Created**\\nSend **${amount} ETH** to \`${to}\`\\n[🔗 View in Safe](<${explorerUrl}>)`;
+    } else {
+      message = `❌ **Proposal Failed**\\nReason: ${res.message || "Unknown error"}`;
+    }
+
+    await fetch(commentUrl, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${githubToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ body: message }),
+    });
+
+    console.log("📢 Comment posted back to GitHub");
+  } catch (err) {
+    console.error("❌ Error:", err.message);
+  }
+})();
+"""
+
+(scripts_path / "proposeETHTransfer.js").write_text(script.strip())
+
+# README
+readme = """
+# 💬 ETH Transfer Proposal via GitHub Comment
+
+## ✅ Usage:
+```
+/propose-eth 0xRecipientAddress 0.5
+```
+
+✅ Automatically proposes ETH transfer from Safe using Reown + posts result to PR/issue comment.
+
+## 📁 Files:
+- .github/workflows/eth-transfer.yml
+- scripts/proposeETHTransfer.js
+
+## 🔒 GitHub Secrets Needed:
+- SAFE_ADDRESS
+- SAFE_RPC_URL
+- REOWN_API_KEY
+- GITHUB_TOKEN
