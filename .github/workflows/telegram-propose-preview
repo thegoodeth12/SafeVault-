@@ -1,0 +1,31 @@
+name: 🔔 Telegram Alert + Proposal Preview
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  telegram-propose-preview:
+    if: startsWith(github.event.comment.body, '/propose-eth') || startsWith(github.event.comment.body, '/propose-token')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install deps
+        run: npm install node-fetch@2 ethers@5
+
+      - name: Run Telegram + Preview Logic
+        env:
+          SAFE_ADDRESS: ${{ secrets.SAFE_ADDRESS }}
+          SAFE_RPC_URL: ${{ secrets.SAFE_RPC_URL }}
+          REOWN_API_KEY: ${{ secrets.REOWN_API_KEY }}
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          COMMENT_BODY: ${{ github.event.comment.body }}
+        run: node scripts/sendProposalWithPreview.js
