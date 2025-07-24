@@ -1,13 +1,13 @@
 const fetch = require("node-fetch");
+const ethers = require("ethers");
 
 const comment = process.env.COMMENT_BODY;
+const commentUrl = process.env.COMMENT_URL;
 const safeAddress = process.env.SAFE_ADDRESS;
 const rpcUrl = process.env.SAFE_RPC_URL;
 const apiKey = process.env.REOWN_API_KEY;
+const githubToken = process.env.GITHUB_TOKEN;
 
-const ethers = require("ethers");
-
-// Predefined Ethereum mainnet token list
 const tokenList = {
   USDC: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eb48",
   WETH: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
@@ -26,10 +26,10 @@ const parseComment = (input) => {
   try {
     const { symbol, to, amount } = parseComment(comment);
     const token = tokenList[symbol.toUpperCase()];
-    if (!token) throw new Error("Unsupported token symbol");
+    if (!token) throw new Error("Unsupported token");
 
     const iface = new ethers.utils.Interface(ERC20_ABI);
-    const data = iface.encodeFunctionData("transfer", [to, ethers.utils.parseUnits(amount, 6)]); // USDC has 6 decimals
+    const data = iface.encodeFunctionData("transfer", [to, ethers.utils.parseUnits(amount, 6)]);
 
     const tx = {
       to: token,
@@ -53,11 +53,25 @@ const parseComment = (input) => {
     });
 
     const res = await response.json();
+
+    let message;
     if (response.ok) {
-      console.log("✅ Token proposal created:", res);
+      const explorerUrl = `https://app.safe.global/transactions/queue?safe=${safeAddress}`;
+      message = `✅ **Proposal Created**\nSend **${amount} ${symbol.toUpperCase()}** to \`${to}\`\n[🔗 View in Safe](<${explorerUrl}>)`;
     } else {
-      console.error("❌ Proposal failed:", res);
+      message = `❌ **Proposal Failed**\nReason: ${res.message || "Unknown error"}`;
     }
+
+    await fetch(commentUrl, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${githubToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ body: message }),
+    });
+
+    console.log("📢 Comment posted back to GitHub");
   } catch (err) {
     console.error("❌ Error:", err.message);
   }

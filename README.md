@@ -1,20 +1,18 @@
-# 💬 GitHub Comment: Token Transfer Proposal (Ethereum)
+# 💬 GitHub Comment → Token Transfer Proposal + Confirmation
 
-## 🔁 Format:
-/propose-token USDC 0xRecipientAddress 100
+## ✅ Example Comment:
+/propose-token USDC 0xRecipientAddress 150
 
-✅ Automatically creates a Safe proposal via Reown to transfer tokens (on Ethereum mainnet).
+This will:
+- Propose a Safe transaction on Ethereum
+- Post a comment back to the PR/issue with a confirmation + link
 
-## 🧠 Supported Tokens (Ethereum):
-- USDC
-- WETH
-
-## 📁 Files
-- `.github/workflows/token-transfer.yml` — GitHub Action trigger
-- `scripts/parseTokenProposal.js` — Parses + sends transaction
-
-## 🔒 Required GitHub Secrets:
+## 🛠 Required Secrets:
 - `SAFE_ADDRESS`
 - `SAFE_RPC_URL`
 - `REOWN_API_KEY`
 - `GITHUB_TOKEN`
+
+## Supported Tokens (Ethereum Mainnet):
+- USDC
+- WETH
