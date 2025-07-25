@@ -1,0 +1,85 @@
+import React, { useState } from 'react'
+import { ethers } from 'ethers'
+import Safe, { EthersAdapter } from '@safe-global/protocol-kit'
+import SafeApiKit from '@safe-global/api-kit'
+import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
+import { useSafeWallet } from '../hooks/useSafeWallet'
+
+export default function OwnerTools() {
+  const { safeAddress, signer, safeSdk } = useSafeWallet()
+
+  const [newOwner, setNewOwner] = useState('')
+  const [removeOwner, setRemoveOwner] = useState('')
+  const [newThreshold, setNewThreshold] = useState(1)
+  const [status, setStatus] = useState('')
+
+  const updateOwners = async () => {
+    try {
+      if (!safeSdk || !signer) throw new Error('Safe SDK not initialized')
+
+      const safeApiKit = new SafeApiKit({ chainId: 42161, txServiceUrl: 'https://safe-transaction-arbitrum.safe.global' })
+      const ethAdapter = new EthersAdapter({ ethers, signerOrProvider: signer })
+
+      const updatedSafeSdk = await Safe.create({ ethAdapter, safeAddress })
+      const txs: MetaTransactionData[] = []
+
+      if (newOwner) {
+        const addOwnerTx = await updatedSafeSdk.getAddOwnerTx({ ownerAddress: newOwner, threshold: newThreshold })
+        txs.push(addOwnerTx.data)
+      }
+
+      if (removeOwner) {
+        const removeOwnerTx = await updatedSafeSdk.getRemoveOwnerTx({ ownerAddress: removeOwner, threshold: newThreshold })
+        txs.push(removeOwnerTx.data)
+      }
+
+      const multiSendTx = await updatedSafeSdk.getMultiSendTx(txs)
+      const safeTx = await updatedSafeSdk.createTransaction({ safeTransactionData: multiSendTx })
+
+      await safeApiKit.proposeTransaction({
+        safeAddress,
+        safeTransactionData: safeTx.data,
+        senderAddress: await signer.getAddress(),
+        safeTxHash: await updatedSafeSdk.getTransactionHash(safeTx),
+      })
+
+      setStatus('✅ Proposal submitted to Safe Queue')
+    } catch (err) {
+      console.error(err)
+      setStatus('❌ Failed to submit proposal')
+    }
+  }
+
+  return (
+    <div className="p-4 border rounded space-y-4">
+      <h2 className="text-lg font-semibold">👥 Owner Tools</h2>
+
+      <div className="space-y-2">
+        <input
+          placeholder="New owner address"
+          value={newOwner}
+          onChange={e => setNewOwner(e.target.value)}
+          className="input input-bordered w-full"
+        />
+        <input
+          placeholder="Owner to remove"
+          value={removeOwner}
+          onChange={e => setRemoveOwner(e.target.value)}
+          className="input input-bordered w-full"
+        />
+        <input
+          type="number"
+          min={1}
+          placeholder="New threshold"
+          value={newThreshold}
+          onChange={e => setNewThreshold(Number(e.target.value))}
+          className="input input-bordered w-full"
+        />
+        <button onClick={updateOwners} className="btn btn-primary w-full">
+          🔁 Submit Owner Update
+        </button>
+        {status && <p className="text-sm">{status}</p>}
+      </div>
+    </div>
+  )
+}
