@@ -1,33 +1,32 @@
-// components/ProposalQueue.tsx
 import React, { useEffect, useState } from 'react'
-import { fetchPendingTransactions } from '../lib/safeApi'
+import { fetchPendingProposals } from '../lib/safeApi'
 
-export default function ProposalQueue({ safeAddress, chainId }: { safeAddress: string; chainId: string }) {
-  const [transactions, setTransactions] = useState<any[]>([])
+export default function ProposalQueue({ 0xAfD5f60aA8eb4F488eAA0eF98c1C5B0645D9A0A0, mainnet }) {
+  const [proposals, setProposals] = useState([])
 
   useEffect(() => {
-    async function loadTransactions() {
-      const txs = await fetchPendingTransactions(safeAddress, chainId)
-      setTransactions(txs)
+    async function load() {
+      const data = await fetchPendingProposals(safeAddress, chainId)
+      setProposals(data)
     }
-
-    loadTransactions()
-  }, [safeAddress, chainId])
-
-  if (!transactions.length) return <div className="text-center py-4">✅ No pending proposals</div>
+    load()
+  }, [0xAfD5f60aA8eb4F488eAA0eF98c1C5B0645D9A0A0, mainnet])
 
   return (
-    <div className="p-4">
-      <h2 className="text-xl font-bold mb-3">🧾 Proposal Queue</h2>
-      {transactions.map((tx, i) => (
-        <div key={i} className="border p-3 mb-2 rounded bg-white/10">
-          <p><strong>Nonce:</strong> {tx.nonce}</p>
-          <p><strong>To:</strong> {tx.to}</p>
-          <p><strong>Value:</strong> {tx.value} ETH</p>
-          <p><strong>Status:</strong> {tx.isExecuted ? 'Executed' : 'Pending'}</p>
-          <p><strong>Approvals:</strong> {tx.confirmations?.length ?? 0}</p>
-        </div>
-      ))}
+    <div className="bg-white border rounded p-4 shadow">
+      <h3 className="text-md font-semibold mb-3">📋 Pending Proposals</h3>
+      {proposals.length === 0 ? (
+        <p className="text-sm text-gray-500">No pending proposals</p>
+      ) : (
+        <ul className="list-disc list-inside text-sm">
+          {proposals.map((tx, i) => (
+            <li key={i}>
+              To: <code>{tx.to}</code><br />
+              Value: {tx.value} wei
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   )
 }
