@@ -13,3 +13,6 @@
     "ethers": "^6.0.0"
   }
 }
+"scripts": {
+  "test": "jest"
+}
