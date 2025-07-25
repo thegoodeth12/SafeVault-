@@ -1,71 +1,101 @@
 // pages/propose.tsx
+import { useEffect, useState } from "react";
+import { useWallet } from "../components/WalletStatus";
+import SafeApiKit from "@safe-global/api-kit";
+import Safe, { EthersAdapter } from "@safe-global/protocol-kit";
+import { ethers } from "ethers";
 
-import { useState } from 'react'
-import { useWallet } from '../hooks/useWallet'
-import { buildSafeTransaction, sendSafeTransaction } from '../lib/safeSdk'
+export default function ProposePage() {
+  const { signer, address } = useWallet();
+  const [safeAddress, setSafeAddress] = useState("");
+  const [target, setTarget] = useState("");
+  const [data, setData] = useState("");
+  const [value, setValue] = useState("0");
+  const [message, setMessage] = useState("");
 
-export default function ProposeTransaction() {
-  const { safeAddress, signerAddress } = useWallet()
-  const [to, setTo] = useState('')
-  const [value, setValue] = useState('')
-  const [data, setData] = useState('')
-  const [status, setStatus] = useState('')
-
-  const handlePropose = async () => {
-    try {
-      setStatus('Preparing proposal...')
-      const tx = await buildSafeTransaction(safeAddress, {
-        to,
-        value: value || '0',
-        data: data || '0x',
-      })
-      await sendSafeTransaction(safeAddress, tx)
-      setStatus('✅ Proposal submitted!')
-    } catch (err) {
-      console.error(err)
-      setStatus('❌ Error submitting proposal.')
+  async function proposeTx() {
+    if (!signer || !ethers.utils.isAddress(safeAddress)) {
+      setMessage("Invalid signer or Safe address");
+      return;
     }
+
+    setMessage("Preparing transaction...");
+
+    const ethAdapter = new EthersAdapter({
+      ethers,
+      signerOrProvider: signer,
+    });
+
+    const safeSdk = await Safe.create({
+      ethAdapter,
+      safeAddress,
+    });
+
+    const tx = await safeSdk.createTransaction({
+      safeTransactionData: {
+        to: target,
+        value: ethers.utils.parseEther(value).toString(),
+        data,
+      },
+    });
+
+    const safeTxHash = await safeSdk.getTransactionHash(tx);
+    const signature = await safeSdk.signTransactionHash(safeTxHash);
+
+    const safeService = new SafeApiKit({
+      txServiceUrl: "https://safe-transaction-mainnet.safe.global", // change per chain
+      ethAdapter,
+    });
+
+    await safeService.proposeTransaction({
+      safeAddress,
+      safeTransactionData: tx.data,
+      safeTxHash,
+      senderAddress: address!,
+      senderSignature: signature.data,
+    });
+
+    setMessage("Transaction proposed 🎉");
   }
 
   return (
-    <div className="max-w-xl mx-auto mt-10 p-6 bg-white rounded shadow-md">
-      <h1 className="text-2xl font-bold mb-4">📝 Propose Transaction</h1>
+    <div className="p-6 space-y-4">
+      <h1 className="text-2xl font-bold">Propose Safe Transaction</h1>
 
-      <label className="block mb-2 font-medium">Recipient Address</label>
       <input
         type="text"
-        value={to}
-        onChange={(e) => setTo(e.target.value)}
-        placeholder="0x..."
-        className="w-full px-3 py-2 mb-4 border rounded"
+        placeholder="Safe Address"
+        value={safeAddress}
+        onChange={(e) => setSafeAddress(e.target.value)}
+        className="w-full border p-2"
       />
-
-      <label className="block mb-2 font-medium">Value (ETH)</label>
       <input
         type="text"
+        placeholder="Target Address"
+        value={target}
+        onChange={(e) => setTarget(e.target.value)}
+        className="w-full border p-2"
+      />
+      <input
+        type="text"
+        placeholder="Value in ETH"
         value={value}
         onChange={(e) => setValue(e.target.value)}
-        placeholder="e.g. 0.01"
-        className="w-full px-3 py-2 mb-4 border rounded"
+        className="w-full border p-2"
       />
-
-      <label className="block mb-2 font-medium">Data (hex)</label>
-      <input
-        type="text"
+      <textarea
+        placeholder="Calldata (0x...)"
         value={data}
         onChange={(e) => setData(e.target.value)}
-        placeholder="Optional calldata (e.g. for contract call)"
-        className="w-full px-3 py-2 mb-4 border rounded"
+        className="w-full border p-2 h-32"
       />
-
       <button
-        onClick={handlePropose}
-        className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
+        onClick={proposeTx}
+        className="bg-blue-600 text-white px-4 py-2 rounded"
       >
-        🚀 Submit Proposal
+        Propose
       </button>
-
-      {status && <p className="mt-4 text-sm text-gray-700">{status}</p>}
+      {message && <p className="text-green-600">{message}</p>}
     </div>
-  )
+  );
 }
