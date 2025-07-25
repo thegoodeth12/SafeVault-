@@ -1,4 +1,6 @@
-// components/OwnerTools.tsx
+const safe = await getSafeInstance() // you should already be connected
+const tx = await buildOwnerRotationTx(safe, oldAddress, newAddress, newThreshold)
+await proposeSafeTransaction(safe, tx)
 
 import { useState } from 'react'
 import { SafeAccountConfig, buildSafeTransaction, sendSafeTransaction } from '../lib/safeSdk'
