@@ -1,0 +1,6 @@
+{
+  "name": "Safe Vault 🔐",
+  "description": "Custom Safe Wallet dashboard",
+  "iconPath":"https://github.com/Safe-app-eth/SafeVault-.git/icon.png",
+  "safeAppUrl": "https://gnosis-vault-safe-dashboard.vercel.app/"
+}
