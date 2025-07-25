@@ -1,0 +1,19 @@
+const account = `eip155:1:`0xAfD5f60aA8eb4F488eAA0eF98c1C5B0645D9A0A0
+const domain =  'https://reown-appkit-evm.vercel.app', // pass the domain (i.e. the hostname) where your dapp is hosted.
+const allApps =  true // The user will be prompted to authorize this wallet to send and receive messages on their behalf for ALL domains using their WalletConnect identity.
+
+// No need to register and sign message if already registered.
+if (notifyClient.isRegistered({ account, domain, allApps })) return;
+
+const {registerParams, message}  = notifyClient.prepareRegistration({
+  account,
+  domain,
+  allApps
+});
+
+const signature = await ethersWallet.signMessage(message);
+
+await notifyClient.register({
+  registerParams,
+  signature,
+})
