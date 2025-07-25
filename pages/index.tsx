@@ -2,6 +2,7 @@
 import Link from 'next/link'
 import { useSafeWallet } from '../hooks/useSafeWallet'
 import { useEffect, useState } from 'react'
+import { useDarkMode } from '../hooks/useDarkMode'
 
 export default function Home() {
   const { address, connect, disconnect } = useSafeWallet()
