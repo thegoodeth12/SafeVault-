@@ -1,19 +1,24 @@
-import { ethers } from 'ethers';
-import Safe, { EthersAdapter } from '@safe-global/protocol-kit';
-import { SafeTransactionDataPartial } from '@safe-global/safe-core-sdk-types';
+const ethAdapter = new EthersAdapter({
+  ethers,
+  signerOrProvider: signer
+})
 
-export async function createSafeProposer(signer: ethers.Wallet, safeAddress: string, rpcUrl: string) {
-  const provider = new ethers.providers.JsonRpcProvider(rpcUrl);
-  const connectedSigner = signer.connect(provider);
-  const ethAdapter = new EthersAdapter({ ethers, signerOrProvider: connectedSigner });
+const safeSdk = await Safe.create({ ethAdapter, safeAddress })
 
-  const safeSdk = await Safe.create({ ethAdapter, safeAddress });
-  return safeSdk;
+const safeTransactionData: SafeTransactionDataPartial = {
+  to: recipient,
+  value: '0',
+  data: encodedData,
+  operation: 0
 }
 
-export async function proposeTx(safeSdk: Safe, txData: SafeTransactionDataPartial) {
-  const safeTx = await safeSdk.createTransaction({ safeTransactionData: txData });
-  const txHash = await safeSdk.getTransactionHash(safeTx);
-  await safeSdk.signTransaction(safeTx);
-  console.log('✅ Proposed Safe transaction with hash:', txHash);
-}
+const safeTx = await safeSdk.createTransaction({ safeTransactionData })
+
+// Send to Safe Tx Service
+const safeService = new SafeApiKit({ txServiceUrl: 'https://safe-transaction-arbitrum.safe.global', ethAdapter })
+await safeService.proposeTransaction({
+  safeAddress,
+  safeTransactionData: safeTx.data,
+  senderAddress: signer.address,
+  senderSignature: await signer.signMessage(safeTx.encodedSignatures())
+})
