@@ -1,0 +1,5 @@
+import { NotifyClient } from "@walletconnect/notify-client";
+
+const notifyClient = await NotifyClient.init({
+  projectId: "<8a81e704ed22e53debea9db88f91bfcb>",
+});
