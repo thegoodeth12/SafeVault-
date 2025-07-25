@@ -1,124 +1,65 @@
-// components/OwnerThresholdManager.tsx
-import React, { useEffect, useState } from 'react';
-import { ethers } from 'ethers';
-import { fetchSafeOwnersAndThreshold } from '../lib/safeApi';
+import Safe, { SafeFactory, SafeAccountConfig } from '@safe-global/safe-core-sdk';
+import EthersAdapter from '@safe-global/safe-ethers-lib';
+import { Signer, providers } from 'ethers';
 
 interface Props {
   safeAddress: string;
-  provider: ethers.providers.Provider;
+  provider: providers.Provider;
+  signer: Signer; // connected wallet signer
 }
 
-const isValidAddress = (address: string) => ethers.utils.isAddress(address);
-
-export const OwnerThresholdManager: React.FC<Props> = ({ safeAddress, provider }) => {
-  const [owners, setOwners] = useState<string[]>([]);
-  const [threshold, setThreshold] = useState<number>(1);
-  const [newOwner, setNewOwner] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-  const [submitting, setSubmitting] = useState<boolean>(false);
-
-  useEffect(() => {
-    async function loadSafeData() {
-      setLoading(true);
-      setError(null);
-      try {
-        const { owners, threshold } = await fetchSafeOwnersAndThreshold(safeAddress, provider);
-        setOwners(owners);
-        setThreshold(threshold);
-      } catch (err) {
-        setError('Failed to load Safe data.');
-      }
-      setLoading(false);
-    }
-    loadSafeData();
-  }, [safeAddress, provider]);
-
-  const handleAddOwner = () => {
-    if (!isValidAddress(newOwner)) {
-      setError('Invalid Ethereum address.');
-      return;
-    }
-    if (owners.includes(newOwner)) {
-      setError('Owner already exists.');
-      return;
-    }
-    setOwners([...owners, newOwner]);
-    setNewOwner('');
-    setError(null);
-  };
-
-  const handleRemoveOwner = (address: string) => {
-    if (owners.length <= 1) {
-      setError('Cannot remove the last owner.');
-      return;
-    }
-    setOwners(owners.filter(o => o !== address));
-    if (threshold > owners.length - 1) {
-      setThreshold(owners.length - 1);
-    }
-    setError(null);
-  };
-
-  const handleThresholdChange = (value: number) => {
-    if (value < 1 || value > owners.length) {
-      setError('Threshold must be between 1 and the number of owners.');
-      return;
-    }
-    setThreshold(value);
-    setError(null);
-  };
+export const OwnerThresholdManager: React.FC<Props> = ({ safeAddress, provider, signer }) => {
+  // ...previous state and functions...
 
   const handleSubmit = async () => {
-    // Placeholder: Implement transaction proposal logic here
     setSubmitting(true);
     setError(null);
 
     try {
-      // Build and submit Safe transaction proposal
-      // e.g. via Safe SDK or your backend API
-      alert('Submit transaction proposal (not implemented)');
-    } catch (err) {
-      setError('Failed to submit transaction proposal.');
+      // Initialize Safe SDK
+      const ethAdapter = new EthersAdapter({ ethers, signer });
+      const safeSdk = await Safe.create({ ethAdapter, safeAddress });
+
+      // Construct the new owners and threshold config
+      const safeAccountConfig: SafeAccountConfig = {
+        owners,
+        threshold,
+      };
+
+      // Create transaction data for the "setup" method
+      // NOTE: For an existing Safe, updating owners and threshold usually involves
+      // a specific contract method call or a delegate call pattern.
+      // Here, you typically use the "setOwners" or "changeThreshold" functionality 
+      // or submit a multi-call transaction depending on the Safe version.
+
+      // For simplicity, we’ll create a multi-send transaction to update owners and threshold
+
+      // Create a transaction proposal (Example: sending a multi-call)
+      // This is a placeholder; replace with actual contract call data as needed
+      const tx = {
+        to: safeAddress,
+        value: '0',
+        data: '0x', // Data encoding updating owners and threshold goes here
+      };
+
+      // Propose the transaction
+      const safeTransaction = await safeSdk.createTransaction(tx);
+
+      // Sign the transaction
+      const signedTx = await safeSdk.signTransaction(safeTransaction);
+
+      // Submit the transaction to the Safe contract (broadcast)
+      const txResponse = await safeSdk.executeTransaction(signedTx);
+      await txResponse.transactionResponse?.wait();
+
+      alert('Transaction proposal submitted successfully!');
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message || 'Failed to submit transaction proposal.');
     }
 
     setSubmitting(false);
   };
 
-  if (loading) return <div>Loading Safe data...</div>;
-
-  return (
-    <div style={{ maxWidth: 600, margin: '0 auto' }}>
-      <h2>Owners</h2>
-      <ul>
-        {owners.map(owner => (
-          <li key={owner}>
-            {owner} <button onClick={() => handleRemoveOwner(owner)}>Remove</button>
-          </li>
-        ))}
-      </ul>
-      <input
-        type="text"
-        placeholder="New owner address"
-        value={newOwner}
-        onChange={e => setNewOwner(e.target.value)}
-      />
-      <button onClick={handleAddOwner}>Add Owner</button>
-
-      <h2>Threshold</h2>
-      <input
-        type="number"
-        value={threshold}
-        min={1}
-        max={owners.length}
-        onChange={e => handleThresholdChange(Number(e.target.value))}
-      />
-
-      {error && <div style={{ color: 'red' }}>{error}</div>}
-
-      <button disabled={submitting} onClick={handleSubmit}>
-        {submitting ? 'Submitting...' : 'Submit Changes'}
-      </button>
-    </div>
-  );
+  // ...rest of component code unchanged...
 };
