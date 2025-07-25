@@ -21,7 +21,7 @@ jobs:
       - name: Run GitHub Proposal Script
         run: npx ts-node scripts/github-proposal.ts
         env:
-          SAFE_SIGNER_KEY: ${{ secrets.SAFE_SIGNER_KEY }}
-          RPC_URL: ${{ secrets.RPC_URL }}
-          SAFE_ADDRESS: ${{ secrets.SAFE_ADDRESS }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SAFE_SIGNER_KEY: ${{ secrets.0xd99c7a0f61f6865166ee9dd8a10d12191e1d250f712c43eb2211d2aa47303f70}
+          RPC_URL: ${{ secrets. https://app.safe.global/apps/open?safe=arb1%3A0x821f2b40d965b81202b181Aba1c7a380C49Ed675&appUrl=https%3A%2F%2Fappkit-lab.reown.com%2Flibrary%2Fmultichain-all}}
+          SAFE_ADDRESS: ${{ secrets.0xAfD5f60aA8eb4F488eAA0eF98c1C5B0645D9A0A0}}
+          GITHUB_TOKEN: ${{ secrets.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}}
