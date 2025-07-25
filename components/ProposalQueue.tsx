@@ -1,47 +1,33 @@
-export default function ProposalQueue() {
-  return (
-    <div>
-      <h2>🧾 Proposal Queue</h2>
-      <p>View and approve pending Safe transactions here.</p>
-    </div>
-  );
-}
-import React from 'react';
-import { SafeTransactionDataPartial } from '@reownlabs/appkit';
+// components/ProposalQueue.tsx
+import React, { useEffect, useState } from 'react'
+import { fetchPendingTransactions } from '../lib/safeApi'
 
-interface ProposalQueueProps {
-  transactions: SafeTransactionDataPartial[];
-  onSelect: (tx: SafeTransactionDataPartial) => void;
-}
+export default function ProposalQueue({ safeAddress, chainId }: { safeAddress: string; chainId: string }) {
+  const [transactions, setTransactions] = useState<any[]>([])
 
-export const ProposalQueue: React.FC<ProposalQueueProps> = ({ transactions, onSelect }) => {
-  if (transactions.length === 0) {
-    return <p>No pending proposals to approve.</p>;
-  }
+  useEffect(() => {
+    async function loadTransactions() {
+      const txs = await fetchPendingTransactions(safeAddress, chainId)
+      setTransactions(txs)
+    }
+
+    loadTransactions()
+  }, [safeAddress, chainId])
+
+  if (!transactions.length) return <div className="text-center py-4">✅ No pending proposals</div>
 
   return (
-    <div>
-      <h3>Pending Proposals</h3>
-      <ul style={{ listStyle: 'none', padding: 0 }}>
-        {transactions.map((tx, i) => (
-          <li
-            key={i}
-            onClick={() => onSelect(tx)}
-            style={{
-              border: '1px solid #ccc',
-              padding: '12px',
-              marginBottom: '8px',
-              cursor: 'pointer',
-              borderRadius: '4px',
-            }}
-            title="Click to view details and approve"
-          >
-            <strong>To:</strong> {tx.to} <br />
-            <strong>Value:</strong> {tx.value?.toString() || '0'} wei <br />
-            <strong>Data:</strong> {tx.data ? tx.data.slice(0, 20) + '...' : '—'}
-          </li>
-        ))}
-      </ul>
+    <div className="p-4">
+      <h2 className="text-xl font-bold mb-3">🧾 Proposal Queue</h2>
+      {transactions.map((tx, i) => (
+        <div key={i} className="border p-3 mb-2 rounded bg-white/10">
+          <p><strong>Nonce:</strong> {tx.nonce}</p>
+          <p><strong>To:</strong> {tx.to}</p>
+          <p><strong>Value:</strong> {tx.value} ETH</p>
+          <p><strong>Status:</strong> {tx.isExecuted ? 'Executed' : 'Pending'}</p>
+          <p><strong>Approvals:</strong> {tx.confirmations?.length ?? 0}</p>
+        </div>
+      ))}
     </div>
-  );
-};
+  )
+}
