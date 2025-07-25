@@ -1,11 +1,14 @@
-// lib/safeApi.ts
-export async function fetchPendingTransactions(safeAddress: string, chainId: string) {
-  const chain = chainId === '42161' ? 'arb1' : 'eth'
-  const url = `https://safe-transaction-${chain}.safe.global/api/v1/safes/${safeAddress}/multisig-transactions/?executed=false&nonce__gt=0`
+// lib/safeApi.ts (append or create if not existing)
+import { ethers } from 'ethers';
 
-  const res = await fetch(url)
-  if (!res.ok) return []
+const SAFE_ABI = [
+  "function getOwners() view returns (address[])",
+  "function getThreshold() view returns (uint256)"
+];
 
-  const data = await res.json()
-  return data.results || []
+export async function fetchSafeOwnersAndThreshold(safeAddress: string, provider: ethers.providers.Provider) {
+  const safeContract = new ethers.Contract(safeAddress, SAFE_ABI, provider);
+  const owners: string[] = await safeContract.getOwners();
+  const threshold: number = (await safeContract.getThreshold()).toNumber();
+  return { owners, threshold };
 }
