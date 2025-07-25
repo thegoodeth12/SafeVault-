@@ -1,0 +1,71 @@
+import React, { useState } from 'react'
+import { ethers } from 'ethers'
+import { useSafeWallet } from '../hooks/useSafeWallet'
+import Safe, { EthersAdapter } from '@safe-global/protocol-kit'
+import SafeApiKit from '@safe-global/api-kit'
+
+export default function ProposeTransactionPage() {
+  const { signer, safeSdk, safeAddress } = useSafeWallet()
+  const [to, setTo] = useState('')
+  const [value, setValue] = useState('')
+  const [data, setData] = useState('')
+  const [status, setStatus] = useState('')
+
+  const handleSubmit = async () => {
+    try {
+      if (!safeSdk || !signer) throw new Error('Missing wallet or Safe SDK')
+
+      const amount = ethers.utils.parseEther(value || '0')
+      const safeTxData = {
+        to,
+        data,
+        value: amount.toString(),
+      }
+
+      const tx = await safeSdk.createTransaction({ safeTransactionData: safeTxData })
+      const safeTxHash = await safeSdk.getTransactionHash(tx)
+
+      const api = new SafeApiKit({ chainId: 42161, txServiceUrl: 'https://safe-transaction-arbitrum.safe.global' })
+
+      await api.proposeTransaction({
+        safeAddress,
+        safeTransactionData: tx.data,
+        safeTxHash,
+        senderAddress: await signer.getAddress(),
+      })
+
+      setStatus('✅ Proposal submitted to queue')
+    } catch (err) {
+      console.error(err)
+      setStatus('❌ Proposal failed')
+    }
+  }
+
+  return (
+    <div className="p-6 space-y-4">
+      <h1 className="text-2xl font-bold">📤 Propose Transaction</h1>
+      <input
+        placeholder="To address"
+        value={to}
+        onChange={e => setTo(e.target.value)}
+        className="input input-bordered w-full"
+      />
+      <input
+        placeholder="ETH amount"
+        value={value}
+        onChange={e => setValue(e.target.value)}
+        className="input input-bordered w-full"
+      />
+      <textarea
+        placeholder="Hex data (optional)"
+        value={data}
+        onChange={e => setData(e.target.value)}
+        className="textarea textarea-bordered w-full"
+      />
+      <button onClick={handleSubmit} className="btn btn-primary w-full">
+        ➕ Submit Proposal
+      </button>
+      {status && <p className="text-sm">{status}</p>}
+    </div>
+  )
+}
