@@ -29,4 +29,9 @@ jobs:
           RPC_URL: ${{ secrets.https://mainnet.infura.io/v3/d287bc172bba4c66a78315df41afa70c }}
           GITHUB_TOKEN: ${{ secrets. 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 }}
           - name: ✅ Validate Environment
-  run: npx tsx scripts/check-env.ts
+          - run: npx tsx scripts/check-env.ts
+          - name: 🔔 Notify Telegram
+  run: npx tsx scripts/notify-safe.ts
+  env:
+    TELEGRAM_BOT_TOKEN: ${{ secrets. 7841605450:AAHev-ZXjdtJg2mp5t6uGFqkvTShSW6PAeY }}
+    TELEGRAM_CHAT_ID: ${{ secrets.1097330947 }}
