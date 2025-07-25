@@ -1,81 +1,65 @@
-# 🔐 SafeVault – Secure, Automated Gnosis Safe App + Dashboard
+# SafeVault 🔐
 
-> Full-stack Gnosis SafeVault project powered by:
-> - 🧱 Safe SDK + AppKit frontend
-> - ⚙️ GitHub Actions + Reown API
-> - 📊 GitHub-hosted live dashboard
-> - 🔐 Secure transaction monitoring
+> **Multisig made mobile. Secure your Safe, your way.**
+
+**SafeVault 🔐** is a secure, modular, and mobile-first multisig wallet built on top of the Gnosis Safe protocol.  
+It enables DAOs and teams to manage treasury operations with:
+- WalletConnect support
+- GitHub-powered Safe proposals
+- Discord alerts for signers
+- Fully mobile installable UI (PWA/TestFlight)
+- Extendable frontend for custom Safe workflows
 
 ---
 
-## 📁 Project Structure
-SafeVault/
-├── SAFE-Dashboard/                  # Live proposal UI
-│   ├── index.html                   # Dashboard frontend
-│   └── proposals.json               # Data source (autoupdated)
-├── scripts/
-│   └── fetchProposals.js           # Reown Safe proposal fetcher
-├── .github/workflows/
-│   └── dashboard-sync.yml          # GitHub Action: Auto-sync proposals
-├── public/ or app/                 # AppKit-based Safe frontend (optional)
-├── contracts/                      # Smart contract logic (optional)
-└── README.md                       # You’re here
+## 🚀 Live Version
+
+- Vercel: [https://safevault.vercel.app](https://safevault.vercel.app)
+- Netlify: [https://safevault.netlify.app](https://safevault.netlify.app)
+- GitHub Pages: [https://your-org.github.io/SafeVault](https://your-org.github.io/SafeVault)
+- Custom Domain:
+
+> Replace with your actual deployment links.
+
 ---
 
-## ⚙️ Setup Guide
+## ✨ Features
 
-### ✅ 1. Clone Repo
+- 🔐 Gnosis Safe SDK + ProtocolKit
+- 🔗 WalletConnect & SafeAuthKit support
+- 📊 View Safe owners, thresholds, balances
+- 📁 GitHub Actions for Safe proposals
+- 📣 Discord webhook alerts for pending transactions
+- 🧩 Reown plugin support (optional smart automation)
+- 🧪 TestFlight-ready export & PWA install support
+- 🌐 Multichain support: Ethereum, Arbitrum, Base, Optimism
+- 🎨 Customizable, developer-friendly frontend
+
+---
+
+## 📦 Tech Stack
+
+- Next.js (App Router)
+- TypeScript + Tailwind CSS
+- wagmi + viem (wallet/chain interaction)
+- @safe-global/protocol-kit
+- WalletConnect
+- GitHub Actions + Discord Webhooks
+- Reown SDK (optional extension)
+
+---
+
+## 🛠️ Local Setup
 
 ```bash
-git clone https://github.com/Safe-app-eth/SafeVault-.git
+git clone https://github.com/your-org/SafeVault
+cd SafeVault
 
-🧠 Features
-Module
-Description
-🧱 Safe SDK / AppKit
-Use Safe AppKit to build full frontend with wallet connect, signer tools, and custom tx
-📦 Reown Integration
-Pulls proposal metadata from Reown API
-🤖 GitHub Actions
-Automates syncing proposals.json
-🔍 GitHub Dashboard
-Visual viewer of Safe activity
-✅ GitHub Secrets
-Keeps sensitive keys secure
-🔐 Gnosis Safe Support
-Can be deployed to Ethereum or Arbitru
-
-🔮 Roadmap (Optional Enhancements)
-
-✅ Telegram bot + Webhook signer alerts
-✅ Slack & GitHub PR ↔ Safe proposal sync
-✅ Admin interface to approve/reject txs
-✅ Analytics on tx status / gas
-
-🧪 Development Commands (if using frontend)
 # Install dependencies
 npm install
 
-# Run local frontend (e.g. Safe AppKit)
+# Configure your environment
+cp .env.example .env.local
+
+# Run the app
 npm run dev
-
-🧬 References
-•Safe SDK
-•Reown
-•AppKit Safe Frontend
-•Safe UI Examples
-
-💼 Maintained by SafeVault DAO
-
-Built with 🔐 from mobile. Powered by open governance.
----
-
-### ✅ You Can Now:
-
-1. Replace your existing `README.md` with this version
-2. Commit it via GitHub mobile or web
-3. Your repo will now be clean, explained, and professional
-
-Let me know when you're ready for the next upgrade — Telegram notifications? Signer alerts? GitHub-linked approvals?
-
-You're operating like a Safe-native dev team 🔥
