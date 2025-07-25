@@ -70,3 +70,11 @@ export default function DashboardSettings({
     </div>
   )
 }
+# Create directories and write files
+base_path = "/mnt/data/safe_dashboard_bundle"
+os.makedirs(base_path, exist_ok=True)
+for filepath, content in files.items():
+    full_path = os.path.join(base_path, filepath)
+    os.makedirs(os.path.dirname(full_path), exist_ok=True)
+    with open(full_path, "w") as f:
+        f.write(content)
