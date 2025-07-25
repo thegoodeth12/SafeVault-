@@ -1,200 +1,189 @@
 import React, { useEffect, useState } from 'react';
-import { ethers, Signer, providers } from 'ethers';
-import Safe, { SafeTransaction } from '@safe-global/safe-core-sdk';
-import EthersAdapter from '@safe-global/safe-ethers-lib';
-import { fetchSafeOwnersAndThreshold } from '../lib/safeApi';
-import { buildOwnerChangeTxs } from '../lib/safeOwnerTxs';
+import {
+  Box,
+  Heading,
+  SimpleGrid,
+  Input,
+  Button,
+  Text,
+  NumberInput,
+  NumberInputField,
+  useToast,
+  IconButton,
+  HStack,
+  VStack,
+  Divider,
+  Spinner,
+} from '@chakra-ui/react';
+import { DeleteIcon } from '@chakra-ui/icons';
+import { ethers } from 'ethers';
+import { getSafeOwnersAndThreshold, buildOwnerChangeTx } from '../lib/safeApi';
 
-interface Props {
+type Props = {
   safeAddress: string;
-  provider: providers.Provider;
-  signer: Signer | null;
-}
+  provider: ethers.providers.JsonRpcProvider;
+  signer: ethers.Signer;
+};
 
-const isValidAddress = (address: string) => ethers.utils.isAddress(address);
-
-export const OwnerThresholdManager: React.FC<Props> = ({ safeAddress, provider, signer }) => {
+export const OwnerThresholdManager: React.FC<Props> = ({
+  safeAddress,
+  provider,
+  signer,
+}) => {
   const [owners, setOwners] = useState<string[]>([]);
-  const [originalOwners, setOriginalOwners] = useState<string[]>([]);
   const [threshold, setThreshold] = useState<number>(1);
-  const [newOwner, setNewOwner] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-  const [submitting, setSubmitting] = useState<boolean>(false);
-  const [txHash, setTxHash] = useState<string | null>(null);
+  const [newOwner, setNewOwner] = useState('');
+  const [pendingOwners, setPendingOwners] = useState<string[]>([]);
+  const [pendingThreshold, setPendingThreshold] = useState<number>(1);
+  const [loading, setLoading] = useState(false);
+  const toast = useToast();
 
   useEffect(() => {
-    async function loadSafeData() {
-      setLoading(true);
-      setError(null);
+    (async () => {
       try {
-        const { owners, threshold } = await fetchSafeOwnersAndThreshold(safeAddress, provider);
+        const { owners, threshold } = await getSafeOwnersAndThreshold(
+          safeAddress,
+          provider
+        );
         setOwners(owners);
-        setOriginalOwners(owners);
+        setPendingOwners(owners);
         setThreshold(threshold);
+        setPendingThreshold(threshold);
       } catch (err) {
-        setError('Failed to load Safe data.');
+        toast({
+          title: 'Failed to load Safe data.',
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });
       }
-      setLoading(false);
-    }
-    loadSafeData();
-  }, [safeAddress, provider]);
+    })();
+  }, [safeAddress, provider, toast]);
 
   const handleAddOwner = () => {
-    if (!isValidAddress(newOwner)) {
-      setError('Invalid Ethereum address.');
+    if (!ethers.utils.isAddress(newOwner)) {
+      toast({
+        title: 'Invalid address',
+        status: 'warning',
+        duration: 3000,
+        isClosable: true,
+      });
       return;
     }
-    if (owners.includes(newOwner)) {
-      setError('Owner already exists.');
+
+    if (pendingOwners.includes(newOwner)) {
+      toast({
+        title: 'Owner already added',
+        status: 'info',
+        duration: 3000,
+        isClosable: true,
+      });
       return;
     }
-    setOwners([...owners, newOwner]);
+
+    setPendingOwners([...pendingOwners, newOwner]);
     setNewOwner('');
-    setError(null);
   };
 
   const handleRemoveOwner = (address: string) => {
-    if (owners.length <= 1) {
-      setError('Cannot remove the last owner.');
-      return;
+    const updated = pendingOwners.filter((o) => o !== address);
+    setPendingOwners(updated);
+
+    if (pendingThreshold > updated.length) {
+      setPendingThreshold(updated.length);
     }
-    setOwners(owners.filter(o => o !== address));
-    if (threshold > owners.length - 1) {
-      setThreshold(owners.length - 1);
-    }
-    setError(null);
   };
 
-  const handleThresholdChange = (value: number) => {
-    if (value < 1 || value > owners.length) {
-      setError('Threshold must be between 1 and the number of owners.');
-      return;
-    }
-    setThreshold(value);
-    setError(null);
-  };
-
-  const handleSubmit = async () => {
-    if (!signer) {
-      setError('Wallet not connected');
-      return;
-    }
-
-    setSubmitting(true);
-    setError(null);
-    setTxHash(null);
-
+  const handleSubmitChanges = async () => {
+    setLoading(true);
     try {
-      const ethAdapter = new EthersAdapter({ ethers, signer });
-      const safeSdk = await Safe.create({ ethAdapter, safeAddress });
+      const tx = await buildOwnerChangeTx({
+        safeAddress,
+        signer,
+        currentOwners: owners,
+        newOwners: pendingOwners,
+        newThreshold: pendingThreshold,
+      });
 
-      // Build multi-send transactions to update owners and threshold
-      const txs = await buildOwnerChangeTxs(safeAddress, originalOwners, owners, threshold);
+      toast({
+        title: 'Transaction ready!',
+        description: 'Check your Safe queue to sign.',
+        status: 'success',
+        duration: 6000,
+        isClosable: true,
+      });
 
-      if (txs.length === 0) {
-        setError('No changes to submit.');
-        setSubmitting(false);
-        return;
-      }
-
-      // Create a multi-send transaction
-      const multiSendTx = await safeSdk.createTransaction(txs);
-
-      // Sign transaction
-      const signedTx = await safeSdk.signTransaction(multiSendTx);
-
-      // Execute transaction
-      const txResponse = await safeSdk.executeTransaction(signedTx);
-      await txResponse.transactionResponse?.wait();
-
-      setTxHash(txResponse.hash || null);
-      alert('Transaction submitted successfully!');
-      setOriginalOwners(owners);
-    } catch (err: any) {
-      setError(err.message || 'Failed to submit transaction.');
+      console.log('Built multisend TX:', tx);
+    } catch (err) {
+      toast({
+        title: 'Failed to build transaction',
+        description: (err as Error).message,
+        status: 'error',
+        duration: 6000,
+        isClosable: true,
+      });
     }
-
-    setSubmitting(false);
+    setLoading(false);
   };
-
-  if (loading) return <div>Loading Safe data...</div>;
 
   return (
-    <div style={{ maxWidth: 600, margin: '0 auto' }}>
-      <h2>Manage Safe Owners & Threshold</h2>
+    <Box mt="6">
+      <Heading size="md" mb="4">
+        Owners
+      </Heading>
 
-      <div>
-        <h3>Current Owners</h3>
-        <ul>
-          {owners.map(owner => (
-            <li key={owner}>
-              {owner}{' '}
-              <button
-                onClick={() => {
-                  if (window.confirm(`Remove owner ${owner}?`)) {
-                    handleRemoveOwner(owner);
-                  }
-                }}
-                disabled={submitting}
-              >
-                Remove
-              </button>
-            </li>
-          ))}
-        </ul>
+      <SimpleGrid columns={1} spacing={2}>
+        {pendingOwners.map((owner) => (
+          <HStack key={owner} justify="space-between" border="1px" borderColor="gray.200" p="2" borderRadius="md">
+            <Text fontSize="sm" wordBreak="break-all">{owner}</Text>
+            <IconButton
+              icon={<DeleteIcon />}
+              size="sm"
+              aria-label="Remove"
+              colorScheme="red"
+              onClick={() => handleRemoveOwner(owner)}
+              isDisabled={owners.length === 1}
+            />
+          </HStack>
+        ))}
+      </SimpleGrid>
 
-        <input
-          type="text"
-          placeholder="New owner address"
+      <HStack mt="4">
+        <Input
+          placeholder="0xNewOwnerAddress"
           value={newOwner}
-          onChange={e => setNewOwner(e.target.value)}
-          disabled={submitting}
-          style={{ width: '100%', marginBottom: 8 }}
+          onChange={(e) => setNewOwner(e.target.value)}
         />
-        <button onClick={handleAddOwner} disabled={submitting || !newOwner}>
-          Add Owner
-        </button>
-      </div>
+        <Button onClick={handleAddOwner} colorScheme="blue">
+          Add
+        </Button>
+      </HStack>
 
-      <div style={{ marginTop: 20 }}>
-        <h3>Threshold</h3>
-        <input
-          type="number"
-          value={threshold}
-          min={1}
-          max={owners.length}
-          onChange={e => handleThresholdChange(Number(e.target.value))}
-          disabled={submitting}
-          style={{ width: 100 }}
-        />
-        <div style={{ fontSize: 12, color: 'gray' }}>
-          Must be between 1 and {owners.length}
-        </div>
-      </div>
+      <Divider my="6" />
 
-      {error && <div style={{ color: 'red', marginTop: 12 }}>{error}</div>}
-
-      <button
-        onClick={handleSubmit}
-        disabled={submitting}
-        style={{ marginTop: 20, padding: '8px 16px' }}
-      >
-        {submitting ? 'Submitting...' : 'Submit Changes'}
-      </button>
-
-      {txHash && (
-        <div style={{ marginTop: 12 }}>
-          Transaction Hash:{' '}
-          <a
-            href={`https://etherscan.io/tx/${txHash}`}
-            target="_blank"
-            rel="noopener noreferrer"
+      <VStack align="start" spacing="4">
+        <Box>
+          <Text>Threshold</Text>
+          <NumberInput
+            value={pendingThreshold}
+            min={1}
+            max={pendingOwners.length}
+            onChange={(v) => setPendingThreshold(Number(v))}
+            width="100px"
           >
-            {txHash}
-          </a>
-        </div>
-      )}
-    </div>
+            <NumberInputField />
+          </NumberInput>
+        </Box>
+
+        <Button
+          colorScheme="teal"
+          onClick={handleSubmitChanges}
+          isLoading={loading}
+          loadingText="Building TX"
+        >
+          Submit Changes
+        </Button>
+      </VStack>
+    </Box>
   );
 };
