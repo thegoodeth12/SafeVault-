@@ -1,37 +1,42 @@
-import React from 'react';
+import { Box, Button, Text, Heading, Spinner, Alert, AlertIcon } from '@chakra-ui/react';
 import { useWallet } from '../hooks/useWallet';
 import { OwnerThresholdManager } from '../components/OwnerThresholdManager';
 
-const SAFE_ADDRESS = '0xYourSafeAddressHere'; // Replace with your Safe address
-
-const OwnerThresholdPage: React.FC = () => {
+const OwnerThresholdPage = () => {
   const { provider, signer, address, error } = useWallet();
 
   return (
-    <div style={{ padding: 20 }}>
-      <h1>Safe Owner & Threshold Management</h1>
+    <Box maxW="600px" mx="auto" mt="10" px="4">
+      <Heading mb="6">🔐 Manage Safe Owners & Threshold</Heading>
 
       {!signer && (
-        <div>
-          <p>Please connect your wallet to manage Safe owners and threshold.</p>
-          {error && <p style={{ color: 'red' }}>{error}</p>}
-        </div>
+        <>
+          <Text mb="4">Please connect your wallet to proceed.</Text>
+          {error && (
+            <Alert status="error" mb="4">
+              <AlertIcon />
+              {error}
+            </Alert>
+          )}
+        </>
       )}
 
-      {signer && provider && (
+      {signer && provider ? (
         <OwnerThresholdManager
-          safeAddress={SAFE_ADDRESS}
+          safeAddress={process.env.NEXT_PUBLIC_SAFE_ADDRESS!}
           provider={provider}
           signer={signer}
         />
+      ) : (
+        <Spinner size="lg" />
       )}
 
       {address && (
-        <p style={{ marginTop: 20 }}>
+        <Text mt="6" fontSize="sm" color="gray.500">
           Connected wallet: <b>{address}</b>
-        </p>
+        </Text>
       )}
-    </div>
+    </Box>
   );
 };
 
