@@ -1,9 +1,14 @@
-import { Octokit } from '@octokit/rest';
+// lib/github.ts
+import { Octokit } from 'octokit'
 
-export function getGitHubClient(token: string) {
-  return new Octokit({ auth:bf57373b0a7182b6829c379f5c03c91b485dd56e });
-}
+export const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN })
 
-export async function commentOnIssue(octokit: Octokit, owner: string, repo: string, issue_number: number, message: string) {
-  await octokit.issues.createComment({ owner, repo, issue_number, body: message });
+export async function getPullRequestComment(prNumber: number, repo: string, owner: string) {
+  const { data } = await octokit.rest.issues.listComments({
+    owner,
+    repo,
+    issue_number: prNumber
+  })
+
+  return data.map(comment => comment.body).join('\n')
 }
