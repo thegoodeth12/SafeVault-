@@ -1,14 +1,23 @@
-# 🔐 Gnosis VaultBot — Telegram Signer
+# 🛡️ SafeBot for Telegram + GitHub
 
-This is a simple Telegram bot for interacting with your Safe.
+Use this bot to:
+- ✅ Deploy via `/deploy`
+- ✅ View proposals via `/safe`
+- ✅ Approve txs via `/safe approve [tx_hash]`
 
-## ✅ Features
-- `/start` — welcome message
-- `/deploy` — triggers Vercel deployment via webhook
-- `/sign` — fetches pending Safe transactions
+### Setup
 
-## 🔧 Setup
+1. Copy `.env.example` to `.env`
+2. Paste your BOT_TOKEN and SAFE_ADDRESS
+3. Run with `python telegram_bot.py` (Replit, Railway, etc.)
 
-1. Install Python dependencies:
-   ```bash
-   pip install python-telegram-bot requests
+### GitHub Integration
+
+To enable webhook:
+- Create a GitHub webhook to your PythonAnywhere/Railway endpoint.
+- Trigger on PR comment or label.
+- Parse comments like `/safe approve` and forward to Telegram.
+
+Coming soon:
+- GitHub App version
+- PR auto-proposal support
