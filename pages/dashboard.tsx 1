@@ -1,18 +1,17 @@
 // pages/dashboard.tsx
-
-import DashboardLayout from '@/components/layout/DashboardLayout';
-import ProposalQueue from '@/components/ProposalQueue';
-import OwnerTools from '@/components/OwnerTools';
-import SafeActivityFeed from '@/components/SafeActivityFeed';
-
-const DASHBOARD_SAFE = '0xAfD5f60aA8eb4F488eAA0eF98c1C5B0645D9A0A0';
+import DashboardLayout from '@/components/layout/DashboardLayout'
+import WalletStatus from '@/components/WalletStatus'
 
 export default function DashboardPage() {
   return (
-    <DashboardLayout title="Gnosis Vault 🔐">
-      <ProposalQueue safeAddress={DASHBOARD_SAFE} />
-      <OwnerTools safeAddress={DASHBOARD_SAFE} />
-      <SafeActivityFeed safeAddress={DASHBOARD_SAFE} />
+    <DashboardLayout>
+      <div className="mb-8">
+        <WalletStatus />
+      </div>
+
+      <section>
+        <p className="text-gray-600">Welcome to your SafeVault 🔐 dashboard.</p>
+      </section>
     </DashboardLayout>
-  );
+  )
 }
