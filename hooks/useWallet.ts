@@ -1,18 +1,14 @@
-// hooks/useWallet.ts
-import { useAccount, useDisconnect, useConnect } from 'wagmi'
-import { InjectedConnector } from 'wagmi/connectors/injected'
+import { useAccount, useChainId, useWalletClient } from 'wagmi'
 
-export function useWallet() {
+export function useSafeWallet() {
   const { address, isConnected } = useAccount()
-  const { disconnect } = useDisconnect()
-  const { connect } = useConnect({
-    connector: new InjectedConnector(),
-  })
+  const { data: walletClient } = useWalletClient()
+  const chainId = useChainId()
 
   return {
     address,
     isConnected,
-    connect,
-    disconnect,
+    chainId,
+    signer: walletClient,
   }
 }
