@@ -1,3 +1,11 @@
+export default function ProposalQueue() {
+  return (
+    <div>
+      <h2>🧾 Proposal Queue</h2>
+      <p>View and approve pending Safe transactions here.</p>
+    </div>
+  );
+}
 import React from 'react';
 import { SafeTransactionDataPartial } from '@reownlabs/appkit';
 
