@@ -1,0 +1,17 @@
+# Step into your project directory
+cd path/to/your/project-folder
+
+# 1. Initialize Git
+git init
+
+# 2. Add GitHub as your remote repo
+git remote add origin https://github.com/thegoodeth12/safe-wallet-dashboard.git
+
+# 3. Stage all files for the first commit
+git add .
+
+# 4. Commit the staged files with a message
+git commit -m "Initial commit for Safe Wallet Dashboard"
+
+# 5. Push to GitHub's main branch
+git push -u origin main
