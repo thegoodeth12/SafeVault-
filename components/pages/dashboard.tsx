@@ -1,4 +1,8 @@
-// pages/dashboard.tsx
+import TransactionQueue from '@/components/TransactionQueue'
+import SettingsPanel from '@/components/SettingsPanel'
+// Inside your main dashboard layout
+<TransactionQueue safeAddress={safeAddress} />
+<SettingsPanel />
 import dynamic from 'next/dynamic'
 import Head from 'next/head'
 import WalletStatus from '@/components/WalletStatus'
