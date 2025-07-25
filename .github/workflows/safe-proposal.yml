@@ -27,4 +27,6 @@ jobs:
           SAFE_SIGNER_KEY: ${{ secrets.0e86b980-2298-4978-8dd5-0b9e7af95016}}
           SAFE_ADDRESS: ${{ secrets.0xAfD5f60aA8eb4F488eAA0eF98c1C5B0645D9A0A0 }}
           RPC_URL: ${{ secrets.https://mainnet.infura.io/v3/d287bc172bba4c66a78315df41afa70c }}
-          GITHUB_TOKEN: ${{ secrets. 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}}
+          GITHUB_TOKEN: ${{ secrets. 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 }}
+          - name: ✅ Validate Environment
+  run: npx tsx scripts/check-env.ts
