@@ -1,3 +1,4 @@
+import { ManageSafeSettings } from "@/components/ManageSafeSettings"
 import { useEffect, useState } from "react";
 import { useWallet } from "../components/WalletStatus";
 import { getSafeDetails } from "../utils/safeTools";
