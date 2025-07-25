@@ -1,3 +1,5 @@
+BOT_TOKEN=7841605450:AAHev-ZXjdtJg2mp5t6uGFqkvTShSW6PAeY
+VERCEL_WEBHOOK_URL=https://replit.com/@thegoodeth09/VercelDeployBot?s=appp
 import os
 import logging
 import requests
