@@ -1,5 +1,7 @@
 // components/DashboardSettings.tsx
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+
+const STORAGE_KEY = 'safe-dashboard-settings'
 
 export default function DashboardSettings({
   safeAddress,
@@ -10,13 +12,33 @@ export default function DashboardSettings({
   const [tempAddress, setTempAddress] = useState(safeAddress)
   const [tempChain, setTempChain] = useState(chainId)
 
+  // Load saved settings from localStorage on mount
+  useEffect(() => {
+    const saved = localStorage.getItem(STORAGE_KEY)
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved)
+        if (parsed.safeAddress) setSafeAddress(parsed.safeAddress)
+        if (parsed.chainId) setChainId(parsed.chainId)
+        setTempAddress(parsed.safeAddress || '')
+        setTempChain(parsed.chainId || 1)
+      } catch (e) {
+        console.error('Failed to load settings:', e)
+      }
+    }
+  }, [])
+
   const applyChanges = () => {
     setSafeAddress(tempAddress)
     setChainId(tempChain)
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ safeAddress: tempAddress, chainId: tempChain })
+    )
   }
 
   return (
-    <div className="bg-gray-50 border rounded p-4 shadow w-full max-w-md">
+    <div className="bg-gray-100 border rounded p-4 shadow w-full max-w-md">
       <h2 className="text-lg font-semibold mb-2">⚙️ Dashboard Settings</h2>
 
       <label className="block text-sm font-medium mb-1">Safe Address</label>
@@ -43,7 +65,7 @@ export default function DashboardSettings({
         className="bg-blue-600 text-white px-4 py-1 rounded"
         onClick={applyChanges}
       >
-        Apply Changes
+        Save Settings
       </button>
     </div>
   )
