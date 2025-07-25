@@ -1,0 +1,15 @@
+async def proposals(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    SAFE_TXS_API = os.getenv("SAFE_TXS_API")  # e.g., https://safe-transaction-arbitrum.safe.global/api/v1/safes/0xYourSafeAddress/multisig-transactions/
+    try:
+        response = requests.get(SAFE_TXS_API)
+        data = response.json()
+        if not data["results"]:
+            await update.message.reply_text("🟢 No pending proposals.")
+        else:
+            msg = "\n".join([
+                f"📝 Tx {tx['nonce']} → {tx['to']} ({'✅' if tx['isExecuted'] else '❌'})"
+                for tx in data["results"] if not tx["isExecuted"]
+            ])
+            await update.message.reply_text(f"🔐 Pending Proposals:\n\n{msg}")
+    except Exception as e:
+        await update.message.reply_text(f"❌ Error fetching proposals: {str(e)}")
