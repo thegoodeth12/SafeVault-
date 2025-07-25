@@ -1,3 +1,5 @@
+import { ThresholdProposalForm } from "@/components/ThresholdProposalForm"
+<ThresholdProposalForm safeAddress={safeAddress} />
 import { ManageSafeSettings } from "@/components/ManageSafeSettings"
 import { useEffect, useState } from "react";
 import { useWallet } from "../components/WalletStatus";
