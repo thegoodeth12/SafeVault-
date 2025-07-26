@@ -1,0 +1,66 @@
+"use client"
+
+import { useState } from "react"
+import { proposeTx } from "@/lib/safe/propose"
+import { useSafeInfo } from "@/hooks/useSafeInfo"
+import { toast } from "sonner"
+
+export default function ThresholdProposal() {
+  const { safeAddress, threshold, owners } = useSafeInfo()
+  const [newThreshold, setNewThreshold] = useState<number>(threshold)
+  const [loading, setLoading] = useState(false)
+
+  const handleSubmit = async () => {
+    if (!safeAddress || newThreshold < 1 || newThreshold > owners.length) {
+      toast.error("Invalid threshold")
+      return
+    }
+
+    setLoading(true)
+    try {
+      const tx = {
+        to: safeAddress,
+        value: "0",
+        data: "0x",
+        operation: 0,
+        safeTxGas: 0,
+        nonce: undefined,
+        customTransactionData: {
+          contractMethod: "changeThreshold(uint256)",
+          contractInputs: [newThreshold],
+        },
+      }
+
+      await proposeTx(tx)
+      toast.success("Threshold proposal submitted!")
+    } catch (err) {
+      console.error(err)
+      toast.error("Failed to propose threshold change")
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <div className="mt-6 border-t pt-6">
+      <h2 className="text-lg font-semibold mb-2">Propose New Threshold</h2>
+      <div className="flex items-center gap-4">
+        <input
+          type="number"
+          min={1}
+          max={owners.length}
+          value={newThreshold}
+          onChange={(e) => setNewThreshold(Number(e.target.value))}
+          className="px-3 py-2 border rounded w-20"
+        />
+        <button
+          onClick={handleSubmit}
+          disabled={loading}
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        >
+          {loading ? "Submitting..." : "Submit Proposal"}
+        </button>
+      </div>
+    </div>
+  )
+}
