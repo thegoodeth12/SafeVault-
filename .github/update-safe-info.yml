@@ -1,35 +1,38 @@
-name: 🛡 Update Safe Info
+name: 📘 Update Safe README + Telegram Alerts
 
 on:
-  workflow_dispatch:
   schedule:
-    - cron: '0 */4 * * *' # every 4 hours
-  push:
-    branches: [main]
+    - cron: '0 * * * *' # Runs every hour
+  workflow_dispatch:
 
 jobs:
-  update:
+  update-readme:
     runs-on: ubuntu-latest
-
     steps:
-      - name: ⬇️ Checkout repo
+      - name: 📥 Checkout Repo
         uses: actions/checkout@v3
 
-      - name: ⚙️ Setup Node
+      - name: 🛠 Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: 18
 
-      - name: 📦 Install deps
-        run: npm ci
+      - name: 📦 Install Dependencies
+        run: npm install
 
-      - name: 🧠 Run script
-        run: npx tsx scripts/fetch-safe-info.ts
+      - name: 🧠 Run Update Script
+        run: npx ts-node scripts/updateReadme.ts
+        env:
+          SAFE_ADDRESS: ${{ secrets.SAFE_ADDRESS }}
+          SAFE_CHAIN_ID: ${{ secrets.SAFE_CHAIN_ID }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
 
-      - name: 📤 Commit changes
+      - name: 📝 Commit Updated README
         run: |
-          git config user.name "SafeVault Bot"
-          git config user.email "bot@safe-vault.xyz"
+          git config user.name 'github-actions'
+          git config user.email 'github-actions@github.com'
           git add README.md
-          git commit -m "🔁 Auto-update Safe info" || echo "No changes"
+          git commit -m '🔄 Auto-update README with Safe proposals [bot]'
           git push
+        continue-on-error: true
