@@ -1,85 +1,113 @@
-import React, { useState } from 'react'
-import { ethers } from 'ethers'
-import Safe, { EthersAdapter } from '@safe-global/protocol-kit'
-import SafeApiKit from '@safe-global/api-kit'
-import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
-import { useSafeWallet } from '../hooks/useSafeWallet'
+// components/OwnerTools.tsx
+import { useState } from "react";
+import { ethers } from "ethers";
+import Safe, { EthersAdapter } from "@safe-global/protocol-kit";
+import { useWallet } from "@/hooks/useWallet";
+import { useSafeAddress } from "@/hooks/useSafeAddress";
 
 export default function OwnerTools() {
-  const { safeAddress, signer, safeSdk } = useSafeWallet()
+  const { signer } = useWallet();
+  const safeAddress = useSafeAddress();
 
-  const [newOwner, setNewOwner] = useState('')
-  const [removeOwner, setRemoveOwner] = useState('')
-  const [newThreshold, setNewThreshold] = useState(1)
-  const [status, setStatus] = useState('')
+  const [newOwner, setNewOwner] = useState("");
+  const [removeOwner, setRemoveOwner] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [hash, setHash] = useState("");
 
-  const updateOwners = async () => {
+  const proposeAddOwner = async () => {
+    if (!signer || !safeAddress) return alert("Missing signer or Safe address");
+    setLoading(true);
     try {
-      if (!safeSdk || !signer) throw new Error('Safe SDK not initialized')
+      const ethAdapter = new EthersAdapter({ ethers, signerOrProvider: signer });
+      const safeSdk = await Safe.create({ ethAdapter, safeAddress });
 
-      const safeApiKit = new SafeApiKit({ chainId: 42161, txServiceUrl: 'https://safe-transaction-arbitrum.safe.global' })
-      const ethAdapter = new EthersAdapter({ ethers, signerOrProvider: signer })
+      const threshold = (await safeSdk.getThreshold()) || 1;
+      const tx = await safeSdk.getAddOwnerTx(newOwner, threshold);
+      const txHash = await safeSdk.getTransactionHash(tx);
 
-      const updatedSafeSdk = await Safe.create({ ethAdapter, safeAddress })
-      const txs: MetaTransactionData[] = []
-
-      if (newOwner) {
-        const addOwnerTx = await updatedSafeSdk.getAddOwnerTx({ ownerAddress: newOwner, threshold: newThreshold })
-        txs.push(addOwnerTx.data)
-      }
-
-      if (removeOwner) {
-        const removeOwnerTx = await updatedSafeSdk.getRemoveOwnerTx({ ownerAddress: removeOwner, threshold: newThreshold })
-        txs.push(removeOwnerTx.data)
-      }
-
-      const multiSendTx = await updatedSafeSdk.getMultiSendTx(txs)
-      const safeTx = await updatedSafeSdk.createTransaction({ safeTransactionData: multiSendTx })
-
-      await safeApiKit.proposeTransaction({
-        safeAddress,
-        safeTransactionData: safeTx.data,
-        senderAddress: await signer.getAddress(),
-        safeTxHash: await updatedSafeSdk.getTransactionHash(safeTx),
-      })
-
-      setStatus('✅ Proposal submitted to Safe Queue')
-    } catch (err) {
-      console.error(err)
-      setStatus('❌ Failed to submit proposal')
+      setHash(txHash);
+      alert(`Add owner proposal ready! SafeTxHash: ${txHash}`);
+    } catch (e) {
+      console.error(e);
+      alert("Error proposing add owner");
+    } finally {
+      setLoading(false);
     }
-  }
+  };
+
+  const proposeRemoveOwner = async () => {
+    if (!signer || !safeAddress) return alert("Missing signer or Safe address");
+    setLoading(true);
+    try {
+      const ethAdapter = new EthersAdapter({ ethers, signerOrProvider: signer });
+      const safeSdk = await Safe.create({ ethAdapter, safeAddress });
+
+      const owners = await safeSdk.getOwners();
+      const lastOwner = owners.find((addr) => addr.toLowerCase() !== removeOwner.toLowerCase());
+      const threshold = (await safeSdk.getThreshold()) || 1;
+
+      if (!lastOwner) {
+        alert("Cannot remove last owner.");
+        return;
+      }
+
+      const tx = await safeSdk.getRemoveOwnerTx({ ownerAddress: removeOwner, threshold });
+      const txHash = await safeSdk.getTransactionHash(tx);
+
+      setHash(txHash);
+      alert(`Remove owner proposal ready! SafeTxHash: ${txHash}`);
+    } catch (e) {
+      console.error(e);
+      alert("Error proposing remove owner");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <div className="p-4 border rounded space-y-4">
-      <h2 className="text-lg font-semibold">👥 Owner Tools</h2>
+    <div className="mt-10 border-t pt-6">
+      <h2 className="text-xl font-semibold mb-2">Owner Management</h2>
 
-      <div className="space-y-2">
+      <div className="mb-6">
+        <label className="block mb-1 text-sm font-medium">Add Owner Address</label>
         <input
-          placeholder="New owner address"
+          type="text"
           value={newOwner}
-          onChange={e => setNewOwner(e.target.value)}
-          className="input input-bordered w-full"
+          onChange={(e) => setNewOwner(e.target.value)}
+          className="border px-3 py-2 rounded w-full"
         />
-        <input
-          placeholder="Owner to remove"
-          value={removeOwner}
-          onChange={e => setRemoveOwner(e.target.value)}
-          className="input input-bordered w-full"
-        />
-        <input
-          type="number"
-          min={1}
-          placeholder="New threshold"
-          value={newThreshold}
-          onChange={e => setNewThreshold(Number(e.target.value))}
-          className="input input-bordered w-full"
-        />
-        <button onClick={updateOwners} className="btn btn-primary w-full">
-          🔁 Submit Owner Update
+        <button
+          onClick={proposeAddOwner}
+          disabled={loading}
+          className="mt-2 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+        >
+          {loading ? "Proposing..." : "Propose Add Owner"}
         </button>
-        {status && <p className="text-sm">{status}</p>}
       </div>
+
+      <div className="mb-4">
+        <label className="block mb-1 text-sm font-medium">Remove Owner Address</label>
+        <input
+          type="text"
+          value={removeOwner}
+          onChange={(e) => setRemoveOwner(e.target.value)}
+          className="border px-3 py-2 rounded w-full"
+        />
+        <button
+          onClick={proposeRemoveOwner}
+          disabled={loading}
+          className="mt-2 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+        >
+          {loading ? "Proposing..." : "Propose Remove Owner"}
+        </button>
+      </div>
+
+      {hash && (
+        <div className="mt-4 text-green-700">
+          <p>Proposal SafeTxHash:</p>
+          <code className="break-words">{hash}</code>
+        </div>
+      )}
     </div>
-  )
+  );
 }
