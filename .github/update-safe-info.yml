@@ -1,10 +1,9 @@
-# .github/workflows/update-safe-info.yml
 name: 🛡 Update Safe Info
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 */3 * * *' # Every 3 hours
+    - cron: '0 */4 * * *' # every 4 hours
   push:
     branches: [main]
 
@@ -16,22 +15,21 @@ jobs:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v3
 
-      - name: ⚙️ Setup Node.js
+      - name: ⚙️ Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: 18
 
-      - name: 📦 Install dependencies
-        run: npm install
+      - name: 📦 Install deps
+        run: npm ci
 
-      - name: 🔐 Fetch Safe Info
-        run: |
-          npx tsx scripts/fetch-safe-info.ts
+      - name: 🧠 Run script
+        run: npx tsx scripts/fetch-safe-info.ts
 
-      - name: 📤 Commit updated README
+      - name: 📤 Commit changes
         run: |
-          git config --global user.name "SafeVault Bot"
-          git config --global user.email "safe-bot@github.com"
+          git config user.name "SafeVault Bot"
+          git config user.email "bot@safe-vault.xyz"
           git add README.md
-          git commit -m "🔄 Update Safe info [bot]" || echo "No changes to commit"
+          git commit -m "🔁 Auto-update Safe info" || echo "No changes"
           git push
