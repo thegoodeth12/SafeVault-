@@ -38,7 +38,8 @@ SafeVault runs inside Safe{Wallet} via iframe using the Safe Apps SDK. You can t
 1.	Opening any Safe on app.safe.global
 2.	Clicking Apps → Add Custom App
 3.	Pasting:
-   https://safe-vault-f44t.vercel.app
+
+ https://safe-vault-f44t.vercel.app
    
 
 The Safe will auto-load the app and inject your Safe address + chain info.
