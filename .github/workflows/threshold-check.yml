@@ -1,0 +1,27 @@
+name: 🧮 Dynamic Threshold Checker
+
+on:
+  schedule:
+    - cron: '0 * * * *'  # Every hour
+  workflow_dispatch:
+
+jobs:
+  check-threshold:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install Dependencies
+        run: npm install ethers@5 node-fetch@2
+
+      - name: Log Safe Threshold
+        env:
+          SAFE_ADDRESS: ${{ secrets.SAFE_ADDRESS }}
+          SAFE_RPC_URL: ${{ secrets.SAFE_RPC_URL }}
+        run: node scripts/checkThreshold.js

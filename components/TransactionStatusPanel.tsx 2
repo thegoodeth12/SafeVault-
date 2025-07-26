@@ -1,0 +1,14 @@
+interface Props {
+  confirmations: number
+  threshold: number
+  isExecuted: boolean
+}
+
+export default function TransactionStatusPanel({ confirmations, threshold, isExecuted }: Props) {
+  return (
+    <div className="p-4 border rounded-lg bg-gray-100">
+      <p><strong>Confirmations:</strong> {confirmations} / {threshold}</p>
+      <p><strong>Status:</strong> {isExecuted ? 'Executed ✅' : 'Pending ⏳'}</p>
+    </div>
+  )
+}

@@ -1,0 +1,7 @@
+useEffect(() => {
+  const interval = setInterval(() => {
+    fetchPendingTransactions(safeAddress, chainId).then(setTxs);
+  }, 30000);
+
+  return () => clearInterval(interval);
+}, [safeAddress, chainId]);

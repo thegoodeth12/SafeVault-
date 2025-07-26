@@ -1,0 +1,9 @@
+{
+  "name": "@mysafenotifier_bot",
+  "short_name": "SafeSigner",
+  "description": "Sign Safe transactions via Telegram",
+  "start_url": "https://safe-wallet-swart.vercel.app/",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}

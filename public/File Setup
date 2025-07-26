@@ -1,0 +1,9 @@
+your-app/
+├── public/
+│   ├── icons/
+│   │   └── icon-192.png, icon-512.png
+│   ├── manifest.json        ← Web app manifest
+│   └── sw.js                ← Service worker
+├── next.config.js           ← Enables service worker
+├── pages/_document.tsx      ← Injects manifest + icons
+├── package.json             ← +PWA plugin

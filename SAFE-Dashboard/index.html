@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>SafeVault Dashboard</title>
+  <meta charset="UTF-8" />
+  <style>
+    body { font-family: Arial, sans-serif; background: #f9f9f9; margin: 2rem; }
+    h1 { color: #333; }
+    table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+    th, td { padding: 0.75rem; border: 1px solid #ddd; text-align: left; }
+    th { background-color: #444; color: #fff; }
+    tr:nth-child(even) { background-color: #f2f2f2; }
+    .status { font-weight: bold; }
+    .pending { color: orange; }
+    .success { color: green; }
+    .failed { color: red; }
+  </style>
+</head>
+<body>
+  <h1>🔐 SafeVault Proposal Dashboard</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Description</th>
+        <th>Status</th>
+        <th>Signers</th>
+      </tr>
+    </thead>
+    <tbody id="dashboard"></tbody>
+  </table>
+
+  <script>
+    async function loadData() {
+      try {
+        const res = await fetch("proposals.json");
+        const data = await res.json();
+
+        const tbody = document.getElementById("dashboard");
+        data.forEach(p => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${new Date(p.date).toLocaleString()}</td>
+            <td>${p.description}</td>
+            <td class="status ${p.status.toLowerCase()}">${p.status}</td>
+            <td>${p.signers?.join(", ") || "—"}</td>
+          `;
+          tbody.appendChild(row);
+        });
+      } catch (err) {
+        console.error("Error loading dashboard:", err);
+      }
+    }
+    loadData();
+  </script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+import { useSafeAddress } from "@/hooks/useSafeAddress"
+import { ManageSafeSettings } from "@/components/ManageSafeSettings"
+
+export default function SettingsPage() {
+  const safeAddress = useSafeAddress()
+
+  if (!safeAddress) return <p>Loading...</p>
+
+  return (
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-4">Safe Settings</h1>
+      <p className="mb-2">Safe Address: {safeAddress}</p>
+
+      <ManageSafeSettings safeAddress={safeAddress} />
+    </div>
+  )
+}

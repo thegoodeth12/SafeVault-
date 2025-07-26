@@ -1,0 +1,37 @@
+name: Propose Safe Transaction
+
+on:
+  workflow_dispatch:
+
+jobs:
+  propose:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install deps
+        run: npm install
+
+      - name: Check environment
+        run: npx ts-node scripts/check-env.ts
+
+      - name: Propose Safe Transaction
+        run: npx ts-node scripts/github-proposal.ts
+        env:
+          SAFE_SIGNER_KEY: ${{ secrets.0e86b980-2298-4978-8dd5-0b9e7af95016}}
+          SAFE_ADDRESS: ${{ secrets.0xAfD5f60aA8eb4F488eAA0eF98c1C5B0645D9A0A0 }}
+          RPC_URL: ${{ secrets.https://mainnet.infura.io/v3/d287bc172bba4c66a78315df41afa70c }}
+          GITHUB_TOKEN: ${{ secrets. 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 }}
+          - name: ✅ Validate Environment
+          - run: npx tsx scripts/check-env.ts
+          - name: 🔔 Notify Telegram
+  run: npx tsx scripts/notify-safe.ts
+  env:
+    TELEGRAM_BOT_TOKEN: ${{ secrets. 7841605450:AAHev-ZXjdtJg2mp5t6uGFqkvTShSW6PAeY }}
+    TELEGRAM_CHAT_ID: ${{ secrets.1097330947 }}

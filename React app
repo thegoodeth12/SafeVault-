@@ -1,0 +1,42 @@
+import React, { useEffect, useState } from 'react';
+import { fetchPendingTransactions } from './utils/fetchPendingTransactions';
+import { SafeTransactionDataPartial } from '@reownlabs/appkit';
+import { ProposalQueue } from './ProposalQueue';
+import { ReownApprovals } from './ReownApprovals';
+import { ethers } from 'ethers';
+
+const provider = new ethers.providers.Web3Provider(window.ethereum);
+
+export const SafeVaultDashboard = ({ safeAddress }: { safeAddress: string }) => {
+  const [txs, setTxs] = useState<SafeTransactionDataPartial[]>([]);
+  const [selectedTx, setSelectedTx] = useState<SafeTransactionDataPartial | null>(null);
+  const [chainId, setChainId] = useState<number>(1);
+
+  useEffect(() => {
+    async function load() {
+      const network = await provider.getNetwork();
+      setChainId(network.chainId);
+      const txs = await fetchPendingTransactions(safeAddress, network.chainId);
+      setTxs(txs);
+    }
+
+    load();
+  }, [safeAddress]);
+
+  return (
+    <div>
+      <ProposalQueue transactions={txs} onSelect={setSelectedTx} />
+      {selectedTx && (
+        <ReownApprovals
+          safeAddress={safeAddress}
+          provider={provider}
+          transactions={[selectedTx]}
+          onApprove={() => {
+            setSelectedTx(null);
+            // Optionally refetch after approval
+          }}
+        />
+      )}
+    </div>
+  );
+};

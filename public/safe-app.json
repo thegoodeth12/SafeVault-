@@ -1,0 +1,10 @@
+{
+  "name": "SafeVault 🔐",
+  "description": "Your secure Safe-native dashboard for signing, proposing, and managing multisig operations.",
+  "iconPath": "icon.svg",
+  "tags": ["finance", "signing", "dashboard"],
+  "developer": {
+    "name": "Safe-app-eth",
+    "url": "https://github.com/Safe-app-eth"
+  }
+}

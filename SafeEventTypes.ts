@@ -1,0 +1,5 @@
+export enum SafeEventType {
+  PROPOSAL_CREATED = "PROPOSAL_CREATED",
+  SIGNED = "SIGNED",
+  EXECUTED = "EXECUTED",
+}

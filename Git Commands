@@ -1,0 +1,23 @@
+# 1. Unzip and move into your repo
+unzip SafeVault-PWA.zip
+mv public/* your-project-root/public/
+mv pages/* your-project-root/pages/
+
+# 2. Stage all new files
+git add public/manifest.json public/service-worker.js public/icon-192.png public/icon-512.png pages/index.tsx
+
+# 3. Commit with message and description
+git commit -m "feat(pwa): Add full SafeVault PWA setup with manifest, service worker, and icons" -m "This commit adds the foundational files and configurations to enable SafeVault as a fully installable Progressive Web App (PWA), including:
+
+- \`public/manifest.json\` with SafeVault branding
+- \`public/service-worker.js\` for basic offline caching
+- Optimized icons (\`icon-192.png\`, \`icon-512.png\`)
+- \`pages/index.tsx\` with live deployment message
+- Vercel-ready structure
+
+Next.js users should ensure \`next-pwa\` is installed and \`next.config.js\` is updated to support service workers.
+
+This sets the stage for a signer-ready, mobile-friendly Safe dashboard experience."
+
+# 4. Push to your main or feature branch
+git push origin main

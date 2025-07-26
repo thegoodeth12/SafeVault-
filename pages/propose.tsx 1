@@ -1,0 +1,12 @@
+// pages/propose.tsx
+import DashboardLayout from '@/components/layout/DashboardLayout'
+import ProposeTransactionForm from '@/components/ProposeTransactionForm'
+
+export default function ProposePage() {
+  return (
+    <DashboardLayout>
+      <h2 className="text-xl font-bold mb-4">Create New Proposal</h2>
+      <ProposeTransactionForm />
+    </DashboardLayout>
+  )
+}

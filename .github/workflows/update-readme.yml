@@ -1,0 +1,24 @@
+name: Update Safe Proposals
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"  # Every 30 mins
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Fetch Safe proposals
+        run: node scripts/fetch-safe-proposals.js
+
+      - name: Update README
+        run: node scripts/update-readme.js
+
+      - name: Commit changes
+        uses: EndBug/add-and-commit@v9
+        with:
+          message: "chore: update Safe proposals"

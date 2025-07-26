@@ -1,0 +1,8 @@
+// src/utils/safe.ts
+export async function getSafeDetails(safeAddress: string) {
+  return {
+    address: safeAddress,
+    threshold: 2,
+    owners: ["0x...", "0x..."],
+  };
+}

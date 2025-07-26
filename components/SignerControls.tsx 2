@@ -1,0 +1,14 @@
+import { useSafeWallet } from '../hooks/useSafeWallet'
+
+export default function SignerControls() {
+  const { address, chainId, isConnected } = useSafeWallet()
+
+  return (
+    <div className="p-4 border rounded-lg shadow-md">
+      <h3 className="font-bold text-lg mb-2">Signer Info</h3>
+      <p><strong>Status:</strong> {isConnected ? 'Connected' : 'Disconnected'}</p>
+      <p><strong>Address:</strong> {address}</p>
+      <p><strong>Chain ID:</strong> {chainId}</p>
+    </div>
+  )
+}

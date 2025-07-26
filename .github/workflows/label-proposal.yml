@@ -1,0 +1,31 @@
+name: 🏷 Label-Based Safe Proposal Trigger
+
+on:
+  pull_request:
+    types: [labeled]
+
+jobs:
+  trigger-proposal:
+    if: github.event.label.name == 'safe-proposal'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install node-fetch@2 ethers@5
+
+      - name: Trigger Safe Proposal via Label
+        env:
+          SAFE_ADDRESS: ${{ secrets.SAFE_ADDRESS }}
+          SAFE_RPC_URL: ${{ secrets.SAFE_RPC_URL }}
+          REOWN_API_KEY: ${{ secrets.REOWN_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          LABEL_NAME: ${{ github.event.label.name }}
+        run: node scripts/labelTriggerProposal.js

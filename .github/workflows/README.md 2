@@ -1,0 +1,22 @@
+# 🛎 Telegram Alert + Proposal Preview
+
+## ✅ Usage:
+Comment one of the following:
+/propose-eth 0xRecipient 1.0
+/propose-token 0xToken 0xRecipient 250
+## 📦 Features:
+- Simulates transaction via `eth_call`
+- Proposes transaction via Reown
+- Sends a Telegram alert via bot
+
+## 🔐 GitHub Secrets Required:
+- `SAFE_ADDRESS`
+- `SAFE_RPC_URL`
+- `REOWN_API_KEY`
+- `TELEGRAM_TOKEN`
+- `TELEGRAM_CHAT_ID`
+🧪 Optional Test:
+
+Use these test comments on a PR:
+/propose-eth 0x742d35Cc6634C0532925a3b844Bc454e4438f44e 0.1
+/propose-token 0xdAC17F958D2ee523a2206206994597C13D831ec7 0xABC... 25

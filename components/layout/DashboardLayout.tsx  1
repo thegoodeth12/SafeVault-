@@ -1,0 +1,25 @@
+// components/layout/DashboardLayout.tsx
+import { ReactNode } from 'react'
+import Head from 'next/head'
+import ConnectButton from '../ConnectButton'
+
+export default function DashboardLayout({ children }: { children: ReactNode }) {
+  return (
+    <>
+      <Head>
+        <title>SafeVault 🔐 Dashboard</title>
+      </Head>
+
+      <div className="min-h-screen bg-gray-50">
+        <header className="flex justify-between items-center px-6 py-4 bg-white shadow">
+          <h1 className="text-2xl font-semibold text-gray-800">SafeVault 🔐</h1>
+          <ConnectButton />
+        </header>
+
+        <main className="px-6 py-10">
+          {children}
+        </main>
+      </div>
+    </>
+  )
+}

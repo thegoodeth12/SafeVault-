@@ -1,0 +1,31 @@
+name: 💬 SafeVault Unified Comment Handler
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  handle-comment:
+    if: contains(github.event.comment.body, '/propose-')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install node-fetch@2 ethers@5
+
+      - name: Dispatch command
+        env:
+          SAFE_ADDRESS: ${{ secrets.SAFE_ADDRESS }}
+          SAFE_RPC_URL: ${{ secrets.SAFE_RPC_URL }}
+          REOWN_API_KEY: ${{ secrets.REOWN_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COMMENT_BODY: ${{ github.event.comment.body }}
+          COMMENT_URL: ${{ github.event.comment.url }}
+        run: node scripts/dispatchComment.js

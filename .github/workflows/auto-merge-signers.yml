@@ -1,0 +1,28 @@
+name: ✅ Auto Merge on Safe Sign + Signer Status Tracker
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+
+jobs:
+  check-signer-status:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install deps
+        run: npm install node-fetch@2
+
+      - name: Check signer status and merge
+        env:
+          SAFE_ADDRESS: ${{ secrets.SAFE_ADDRESS }}
+          REOWN_API_KEY: ${{ secrets.REOWN_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/autoMergeIfThresholdMet.js

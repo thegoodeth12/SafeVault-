@@ -1,0 +1,3 @@
+import { useSafeWallet } from '../hooks/useSafeWallet'
+
+const { address, chainId, signer, isConnected } = useSafeWallet()

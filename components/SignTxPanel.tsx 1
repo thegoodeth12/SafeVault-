@@ -1,0 +1,30 @@
+import TransactionStatusPanel from './TransactionStatusPanel'
+import SignTransactionButton from './SignTransactionButton'
+import ExecuteTransactionButton from './ExecuteTransactionButton'
+
+interface Props {
+  safeTxHash: string
+  confirmations: number
+  threshold: number
+  isExecuted: boolean
+}
+
+export default function SignTxPanel({ safeTxHash, confirmations, threshold, isExecuted }: Props) {
+  return (
+    <div className="space-y-4 p-4 border rounded-md bg-white shadow">
+      <TransactionStatusPanel
+        confirmations={confirmations}
+        threshold={threshold}
+        isExecuted={isExecuted}
+      />
+      {!isExecuted && (
+        <div className="flex gap-4">
+          <SignTransactionButton safeTxHash={safeTxHash} />
+          {confirmations >= threshold && (
+            <ExecuteTransactionButton safeTxHash={safeTxHash} />
+          )}
+        </div>
+      )}
+    </div>
+  )
+}

@@ -1,0 +1,42 @@
+// Handle response to a `notifyClient.subscribe(...)` call
+notifyClient.on("notify_subscription", async ({ params }) => {
+  const { error } = params;
+
+  if (error) {
+    // Setting up the subscription failed.
+    // Inform the user of the error and/or clean up app state.
+    console.error("Setting up subscription failed: ", error);
+  } else {
+    // New subscription was successfully created.
+    // Inform the user and/or update app state to reflect the new subscription.
+    console.log(`Subscribed successfully.`);
+  }
+});
+
+// Handle an incoming notification
+notifyClient.on("notify_message", ({ params }) => {
+  const { message } = params;
+  // e.g. build a notification using the metadata from `message` and show to the user.
+});
+
+// Handle response to a `notifyClient.update(...)` call
+notifyClient.on("notify_update", ({ params }) => {
+  const { error } = params;
+
+  if (error) {
+    // Updating the subscription's scope failed.
+    // Inform the user of the error and/or clean up app state.
+    console.error("Setting up subscription failed: ", error);
+  } else {
+    // Subscription's scope was updated successfully.
+    // Inform the user and/or update app state to reflect the updated subscription.
+    console.log(`Successfully updated subscription scope.`);
+  }
+});
+
+// Handle a change in the existing subscriptions (e.g after a subscribe or update)
+notifyClient.on("notify_subscriptions_changed", ({ params }) => {
+  const { subscriptions } = params;
+  // `subscriptions` will contain any *changed* subscriptions since the last time this event was emitted.
+  // To get a full list of subscriptions for a given account you can use `notifyClient.getActiveSubscriptions({ account: 'eip155:1:0x63Be...' })`
+});
