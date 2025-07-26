@@ -1,4 +1,6 @@
-// pages/dashboard.tsx
+import ProposeTx from "@/components/ProposeTx";
+
+<ProposeTx />
 import DashboardLayout from '@/components/layout/DashboardLayout'
 import WalletStatus from '@/components/WalletStatus'
 
