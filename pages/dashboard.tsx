@@ -1,4 +1,6 @@
-import { useSafeAddress } from "@/hooks/useSafeAddress";
+import OwnerTools from "@/components/OwnerTools";
+
+<OwnerTools />import { useSafeAddress } from "@/hooks/useSafeAddress";
 
 export default function DashboardPage() {
   const safeAddress = useSafeAddress();
