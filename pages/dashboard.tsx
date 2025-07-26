@@ -1,4 +1,21 @@
-// pages/dashboard.tsx
+import { useSafeAddress } from "@/hooks/useSafeAddress";
+
+export default function DashboardPage() {
+  const safeAddress = useSafeAddress();
+
+  return (
+    <div>
+      <h1 className="text-2xl font-bold">Safe Dashboard</h1>
+      {safeAddress ? (
+        <p className="mt-2 text-blue-600 underline">
+          <a href={`/settings/manage?safe=${safeAddress}`}>Manage Owners & Threshold</a>
+        </p>
+      ) : (
+        <p className="text-gray-500">No Safe detected.</p>
+      )}
+    </div>
+  );
+}
 
 import React from 'react';
 import Head from 'next/head';
