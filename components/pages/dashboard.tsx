@@ -1,3 +1,9 @@
+import ExecuteTx from '../components/ExecuteTx'
+
+...
+
+<ProposeTx />
+<ExecuteTx />
 import TransactionQueue from '@/components/TransactionQueue'
 import SettingsPanel from '@/components/SettingsPanel'
 // Inside your main dashboard layout
