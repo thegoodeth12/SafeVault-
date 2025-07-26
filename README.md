@@ -94,3 +94,10 @@ Place this in your **`public/manifest.json`** file:
   "description": "Dashboard for viewing and managing Safe{Wallet} accounts",
   "iconPath": "logo.svg",
   "network": {
+---
+
+## 🔄 Recent Safe Proposals
+
+<!-- SAFE_PROPOSALS_START -->
+Loading proposals...
+<!-- SAFE_PROPOSALS_END -->
