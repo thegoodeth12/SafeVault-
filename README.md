@@ -101,3 +101,18 @@ Place this in your **`public/manifest.json`** file:
 <!-- SAFE_PROPOSALS_START -->
 Loading proposals...
 <!-- SAFE_PROPOSALS_END -->
+
+## 🔐 Safe Proposal Tools
+
+- ✅ [Live Dashboard](https://safe-vault-f44t.vercel.app/)
+- 🔄 GitHub Action: Automated Signing (`.github/workflows/sign-safe-proposals.yml`)
+- ✍️ Manual Wallet Signing: Enabled in UI (MetaMask or WalletConnect)
+
+## 🔧 Dependencies
+
+- @safe-global/protocol-kit
+- @safe-global/api-kit
+- ethers
+- dotenv
+- ts-node
+- typescript
