@@ -1,6 +1,4 @@
-import OwnerTools from "@/components/OwnerTools";
-
-    <OwnerTools />
+[
   {
     "date": "2025-07-24T13:00:00Z",
     "description": "Send 0.1 ETH to 0xABC...",
@@ -13,4 +11,7 @@ import OwnerTools from "@/components/OwnerTools";
     "status": "Success",
     "signers": ["0xSigner3", "0xSigner4", "0xSigner5"]
   }
-]
+   { 
+    import OwnerTools from "@/components/OwnerTools";
+
+    <OwnerTools />
