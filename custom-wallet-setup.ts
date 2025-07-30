@@ -74,11 +74,3 @@ with open(custom_wallet_path, "w") as f:
 
 with open(wallet_connect_path, "w") as f:
     f.write(wallet_connect_ts)
-
-# Zip everything
-with zipfile.ZipFile(zip_path, "w") as zipf:
-    zipf.write(custom_wallet_path, arcname="src/wallets/customWallet.ts")
-    zipf.write(wallet_connect_path, arcname="src/walletConnect.ts")
-    zipf.write(logo_src_path, arcname="public/logo512.png")
-
-zip_path
