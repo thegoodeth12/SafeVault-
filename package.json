@@ -18,7 +18,7 @@
     "react",
     "typescript"
   ],
-  "homepage": "https://your-username.github.io/SafeVault-Frontend",
+  "homepage": "https://Safe-app-eth.github.io/SafeVault-Frontend",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
