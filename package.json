@@ -30,14 +30,14 @@
   "dependencies": {
     "@reown/appkit": "^1.1.0",
     "@safe-global/safe-apps-react-sdk": "^0.11.1",
-    "@safe-global/safe-apps-sdk": "^7.6.0",
+    "@safe-global/safe-apps-sdk": "^9.0.0",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-router-dom": "^6.22.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-router-dom": "^7.0.0",
     "react-scripts": "5.0.1",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^5.0.0"
   },
   "devDependencies": {
     "gh-pages": "^6.0.0",
