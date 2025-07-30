@@ -121,6 +121,9 @@ Loading proposals...
 
 ---
 
+[![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-live-blue)](https://safe-app-eth.github.io/SafeVault-/)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/<your-netlify-id>/deploy-status)](https://app.netlify.com/sites/safevault-dashboard/deploys)
+
 ## 🧠 Version & Metadata
 
 - **Version:** `v1.0.0`  
