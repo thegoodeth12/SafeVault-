@@ -1,0 +1,5 @@
+SafeVault 🔐 is a custom, secure dashboard built with Safe{Core} SDKs to manage multisig wallets on Ethereum and Layer 2 networks. It includes:
+- 🧠 Real-time Safe status (owners, threshold, balances)
+- 🚀 One-click proposals via GitHub or Telegram
+- 🧩 Telegram and GitHub integration for governance alerts
+- 🐳 Docker & Vercel support for fast deployment

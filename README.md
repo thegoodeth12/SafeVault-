@@ -1,65 +1,134 @@
-# SafeVault 🔐
+# 🔐 SafeVault — Secure Dashboard for Safe{Wallet}
 
-> **Multisig made mobile. Secure your Safe, your way.**
-
-**SafeVault 🔐** is a secure, modular, and mobile-first multisig wallet built on top of the Gnosis Safe protocol.  
-It enables DAOs and teams to manage treasury operations with:
-- WalletConnect support
-- GitHub-powered Safe proposals
-- Discord alerts for signers
-- Fully mobile installable UI (PWA/TestFlight)
-- Extendable frontend for custom Safe workflows
+**Live App:** [safe-vault-f44t.vercel.app](https://safe-vault-f44t.vercel.app)  
+✅ Safe App Ready · 🟢 GitHub Actions Enabled · ⚡️ Vercel Deployed
 
 ---
 
-## 🚀 Live Version
+## 🚀 Overview
 
-- Vercel: [https://safevault.vercel.app](https://safevault.vercel.app)
-- Netlify: [https://safevault.netlify.app](https://safevault.netlify.app)
-- GitHub Pages: [https://your-org.github.io/SafeVault](https://your-org.github.io/SafeVault)
-- Custom Domain:
-
-> Replace with your actual deployment links.
+**SafeVault** is a secure, fully integrated dashboard for managing your [Safe{Wallet}](https://safe.global/). It empowers Safe owners to view account info, propose transactions, manage thresholds, and receive real-time updates—all in one interface.
 
 ---
 
 ## ✨ Features
 
-- 🔐 Gnosis Safe SDK + ProtocolKit
-- 🔗 WalletConnect & SafeAuthKit support
-- 📊 View Safe owners, thresholds, balances
-- 📁 GitHub Actions for Safe proposals
-- 📣 Discord webhook alerts for pending transactions
-- 🧩 Reown plugin support (optional smart automation)
-- 🧪 TestFlight-ready export & PWA install support
-- 🌐 Multichain support: Ethereum, Arbitrum, Base, Optimism
-- 🎨 Customizable, developer-friendly frontend
+- 📊 **Live Safe Details** – View Safe address, owners, balances, threshold
+- 🧩 **Safe App SDK Integration** – Seamlessly runs inside Safe{Wallet} via iframe
+- 🧠 **Automated Proposals** – Triggered by GitHub Actions or external bots
+- 🌐 **Multichain Support** – Works on Arbitrum and Ethereum
+- 🔗 **Wallet Compatibility** – Supports MetaMask, WalletConnect, OneKey, Ledger, MPC wallets
 
 ---
 
-## 📦 Tech Stack
+## 📦 Core Dependencies
 
-- Next.js (App Router)
-- TypeScript + Tailwind CSS
-- wagmi + viem (wallet/chain interaction)
-- @safe-global/protocol-kit
-- WalletConnect
-- GitHub Actions + Discord Webhooks
-- Reown SDK (optional extension)
+| Package                             | Purpose                                  |
+|-------------------------------------|------------------------------------------|
+| `@safe-global/protocol-kit`         | Interact with Safe smart contracts       |
+| `@safe-global/api-kit`              | Communicate with the Safe Transaction Service |
+| `@safe-global/safe-core-sdk-types`  | Type definitions for Safe SDK            |
+| `ethers`                            | Ethereum JavaScript SDK                  |
+| `dotenv`                            | Environment variable support             |
+
+**Dev Dependencies:**
+
+- `typescript` – TypeScript compiler  
+- `ts-node` – Run TypeScript directly
 
 ---
 
-## 🛠️ Local Setup
+## 🌐 Safe App Integration (Iframe)
+
+To use SafeVault inside [app.safe.global](https://app.safe.global):
+
+1. Open any Safe.
+2. Go to **Apps** → **Add Custom App**
+3. Paste this URL:
+
+```txt
+https://safe-vault-f44t.vercel.app
+```
+
+It will load inside the Safe iframe, automatically detecting your Safe address and chain.
+
+---
+
+## 🧪 Local Development
 
 ```bash
-git clone https://github.com/your-org/SafeVault
-cd SafeVault
-
-# Install dependencies
+git clone https://github.com/Safe-app-eth/SafeVault-.git
+cd SafeVault-
 npm install
-
-# Configure your environment
-cp .env.example .env.local
-
-# Run the app
 npm run dev
+```
+
+Then open [`http://localhost:3000`](http://localhost:3000) in your browser.
+
+---
+
+## ⚙️ Production Deployment
+
+This project uses **Vercel** for continuous deployment.
+
+🔗 **Live Site:** [https://safe-vault-f44t.vercel.app](https://safe-vault-f44t.vercel.app)  
+🔄 Every push to `main` triggers a redeploy.
+
+---
+
+## 🛠 GitHub Actions
+
+This repository includes a GitHub Action that:
+
+- ⏳ **Auto-updates the README** with recent Safe proposals
+- 🔔 **Sends alerts** to Slack/Telegram (configurable)
+- 🤖 **Supports auto-PR creation** for Safe proposals
+
+Workflow file: `.github/workflows/sign-safe-proposals.yml`
+
+---
+
+## 📄 `manifest.json` for Safe{App}
+
+Place the following in your `public/manifest.json` for Safe Apps SDK compatibility:
+
+```json
+{
+  "name": "SafeVault",
+  "description": "Dashboard for viewing and managing Safe{Wallet} accounts",
+  "iconPath": "logo.svg",
+  "network": {
+    "chainId": [1, 42161]
+  }
+}
+```
+
+---
+
+## 🔄 Recent Safe Proposals
+
+<!-- SAFE_PROPOSALS_START -->
+Loading proposals...
+<!-- SAFE_PROPOSALS_END -->
+
+---
+
+## 🔐 Safe Proposal Tools
+
+- ✅ **[Live Dashboard](https://safe-vault-f44t.vercel.app/)**
+- 🔄 **Automated Signing:** via `.github/workflows/sign-safe-proposals.yml`
+- ✍️ **Manual Signing:** Supported in UI via MetaMask or WalletConnect
+
+---
+
+## 🧠 Version & Metadata
+
+- **Version:** `v1.0.0`  
+- **Release Date:** July 26, 2025  
+- **GitHub:** [github.com/Safe-app-eth/SafeVault-](https://github.com/Safe-app-eth/SafeVault-)
+
+---
+
+## 🛡 Legal
+
+© 2025 SafeVault. All rights reserved.

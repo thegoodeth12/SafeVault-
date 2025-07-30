@@ -1,0 +1,31 @@
+## 🔐 Safe Vault – Custom Safe Dashboard v1.0.0
+
+A full-featured Safe-native dApp dashboard with threshold proposals, multisend, owner tools, and real-time wallet status. Built for mobile and desktop use.
+
+### ✅ Key Features
+- 📊 Live Safe info dashboard
+- 👥 View owners and signature threshold
+- 🔁 Propose threshold changes
+- 📦 Multisend ETH to multiple addresses
+- 🧾 Safe proposal preview + signing
+- 🔐 Secure GitHub → Safe integration (auto proposals via tags)
+
+### 📱 Mobile Optimized
+Built with iOS users in mind. Fast, clean, secure, and deployable via Vercel.
+
+### ⚙️ GitHub Action (Safe Proposal)
+Trigger Safe proposals by simply pushing a release tag (e.g. `v1.1.0`).
+
+### 🌐 Deployment Ready
+- Frontend: Next.js
+- Protocol: @safe-global/protocol-kit
+- Compatible: Arbitrum, Ethereum Mainnet, etc.
+
+---
+
+### 👁‍🗨 Coming Soon
+- Telegram push alerts for new proposals
+- GitHub PR comment → Safe signer integration
+- UI refinements and transaction history page
+
+> Built with ❤️ by thegoodeth and ChatGPT
