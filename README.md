@@ -1,3 +1,10 @@
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+
+## 📝 License
+
+This project is licensed under the MIT License — see the [LICENSE](./LICENSE) file for details.
+
+
 # 🔐 SafeVault — Secure Dashboard for Safe{Wallet}
 
 **Live App:** [safe-vault-f44t.vercel.app](https://safe-vault-f44t.vercel.app)  
