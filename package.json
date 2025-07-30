@@ -16,9 +16,11 @@
     "appkit",
     "frontend",
     "react",
-    "typescript"
+    "typescript",
+    "governance",
+    "multisig"
   ],
-  "homepage": "https://Safe-app-eth.github.io/SafeVault-Frontend",
+  "homepage": "https://safe-app-eth.github.io/SafeVault-Frontend",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
