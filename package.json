@@ -1,41 +1,45 @@
 {
-  "name": "safevault-automation",
+  "name": "safevault-frontend",
   "version": "1.0.0",
+  "private": true,
   "type": "module",
-  "description": "Automation tooling for SafeVault – a secure and customizable Safe{Wallet} dashboard integration with GitHub, Discord, and Reown.",
+  "description": "Frontend UI for SafeVault – a secure, Reown-integrated, time-locked Safe{Wallet} dashboard with automation preview and signer controls.",
   "author": "thegoodeth <rchigozle60@gmail.com>",
   "license": "MIT",
   "keywords": [
     "safe",
     "gnosis-safe",
-    "safe-wallet",
     "safevault",
-    "automation",
-    "web3",
-    "ethereum",
-    "arbitrum",
+    "safe-wallet",
     "reown",
-    "gnosis",
-    "typescript",
-    "github-actions"
+    "web3",
+    "appkit",
+    "frontend",
+    "react",
+    "typescript"
   ],
+  "homepage": "https://your-username.github.io/SafeVault-Frontend",
   "scripts": {
-    "start": "ts-node scripts/safevault-manage.ts",
-    "dev": "nodemon scripts/safevault-manage.ts"
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "dependencies": {
-    "@safe-global/protocol-kit": "^1.5.0",
-    "@safe-global/safe-core-sdk": "^6.0.0",
-    "@safe-global/safe-ethers-lib": "^6.0.0",
-    "@safe-global/api-kit": "^4.0.0",
-    "@safe-global/safe-core-sdk-types": "^5.0.0",
-    "ethers": "^6.6.0",
-    "dotenv": "^17.0.0"
+    "@reown/appkit": "^1.1.0",
+    "@safe-global/safe-apps-react-sdk": "^0.11.1",
+    "@safe-global/safe-apps-sdk": "^7.6.0",
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.22.0",
+    "react-scripts": "5.0.1",
+    "web-vitals": "^2.1.4"
   },
   "devDependencies": {
-    "ts-node": "^10.9.1",
-    "typescript": "^5.4.2",
-    "nodemon": "^3.0.2"
+    "gh-pages": "^6.0.0",
+    "typescript": "^5.4.2"
   },
   "engines": {
     "node": ">=18.0.0"
