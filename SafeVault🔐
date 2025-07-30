@@ -1,0 +1,13 @@
+/
+├── README.md
+├── .github/
+│   └── workflows/
+│       └── update-safe-info.yml
+├── scripts/
+│   └── fetch-safe-info.ts
+├── lib/
+│   └── safe/
+│       └── utils.ts      <-- Contains getSafeInfo()
+├── package.json
+├── tsconfig.json
+└── .env.local            <-- (Optional for local testing)

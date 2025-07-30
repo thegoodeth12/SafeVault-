@@ -1,0 +1,24 @@
+from PIL import Image, ImageDraw
+import os
+
+# Create a simple placeholder logo (512x512) with text "SafeVault"
+size = (512, 512)
+background_color = (30, 30, 30)
+text_color = (255, 255, 255)
+
+# Create image
+image = Image.new("RGB", size, background_color)
+draw = ImageDraw.Draw(image)
+text = "SafeVault"
+font_size = 50
+
+# Draw centered text (using default font for now)
+text_width, text_height = draw.textsize(text)
+position = ((size[0] - text_width) // 2, (size[1] - text_height) // 2)
+draw.text(position, text, fill=text_color)
+
+# Save the image
+logo_path = "/mnt/data/logo512.png"
+image.save(logo_path)
+
+logo_path

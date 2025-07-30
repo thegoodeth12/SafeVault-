@@ -1,0 +1,5 @@
+- name: 📲 Notify Telegram
+  run: |
+    curl -X POST https://api.telegram.org/bot${{ secrets. 7841605450:AAHev-ZXjdtJg2mp5t6uGFqkvTShSW6PAeY }}/sendMessage \
+      -d chat_id=${{ secrets. 1097330947 }} \
+      -d text="✅ Safe Info updated and pushed to GitHub!"

@@ -1,0 +1,52 @@
+## 🔐 Security Overview – SafeVault 🔐
+
+SafeVault is a custom Safe{Wallet} frontend built on **Next.js**, hosted on **Vercel**, and powered by the [Reown AppKit](https://appkit-lab.reown.org). This project enforces strong Web3 security practices to ensure wallet interactions and transaction data remain secure, private, and tamper-resistant.
+
+---
+
+### ✅ HTTP Security Headers
+
+| Header | Purpose |
+|--------|---------|
+| `Cache-Control: private, no-cache, no-store, must-revalidate` | Prevents sensitive content from being cached in the browser or by intermediaries. |
+| `Content-Security-Policy` | Enforces a strict whitelist of trusted domains for scripts, styles, images, frames, fonts, and connections. |
+| `Strict-Transport-Security` | Forces use of HTTPS with a two-year (63072000 seconds) HSTS policy. |
+| `frame-ancestors` | Limits embedding to trusted domains such as `https://app.safe.global`. |
+| `report-uri`, `Report-To` | All CSP violations are reported to [Sentry](https://sentry.io) for real-time auditing. |
+| `X-Vercel-Cache` | Ensures dynamic data (like wallet info) is **not** served from cache when inappropriate. |
+
+---
+
+### 🔗 Trusted Third-Party Integrations
+
+SafeVault only connects to a controlled set of trusted, audited services:
+
+- **WalletConnect** (`walletconnect.com`, `walletconnect.org`) – for session, RPC, and relay
+- **Token metadata** – `tokens.1inch.io`, `ipfs.io`, `cdn.zerion.io`
+- **Safe AppKit / Reown** – `appkit-lab.reown.org`, `secure.reown.com`
+- **Public RPCs** – via PublicNode (Ethereum, Arbitrum, Polygon, Gnosis, Optimism, Base)
+- **Other APIs** – `quote-api.jup.ag`, `mempool.space`, etc. (for advanced swap and mempool tools)
+
+These are explicitly defined in the `Content-Security-Policy` header and cannot be overridden at runtime.
+
+---
+
+### 📡 Real-Time Monitoring
+
+- **Sentry Integration:** All security policy violations are automatically reported to Sentry.
+- **Inline Script Protection:** Scripts are only executed if they match the defined nonce value and come from trusted sources.
+- **Dynamic pages only:** Caching is disabled for all pages involving wallet data or transaction review.
+
+---
+
+### 🧾 Notes
+
+- This project is intended for use as an embedded dApp inside Safe{Wallet}, or as a standalone progressive web interface.
+- The frontend is **stateless by design**, with **no storage of private keys, session data, or PII**.
+- You can deploy it via Vercel, GitHub Pages, or other static hosts, with security and performance optimized by default.
+
+---
+
+For deployment & audit documentation, see:
+- [`docs/security.md`](./docs/security.md)
+- [`vercel/README.md`](./vercel/README.md)

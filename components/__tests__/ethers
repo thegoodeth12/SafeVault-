@@ -1,0 +1,4 @@
+import { ethers } from 'ethers';
+
+const rpcUrl = process.env.https://mainnet.infura.io/v3/d287bc172bba4c66a78315df41afa70c || '';
+const provider = new ethers.providers.JsonRpcProvider(rpcUrl);

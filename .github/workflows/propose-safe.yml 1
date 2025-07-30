@@ -1,0 +1,30 @@
+name: Propose Safe Transaction
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  propose:
+    runs-on: ubuntu-latest
+
+    env:
+      SAFE_ADDRESS: ${{ secrets.0xAfD5f60aA8eb4F488eAA0eF98c1C5B0645D9A0A0 }}
+      SIGNER_PRIVATE_KEY: ${{ secrets.0e86b980-2298-4978-8dd5-0b9e7af95016 }}
+      RPC_URL: ${{ secrets.RPC_URL }}
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Execute Proposal Script
+        run: node scripts/propose.js
