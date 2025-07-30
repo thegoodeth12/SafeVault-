@@ -1,0 +1,107 @@
+🔐 Hello SafeVault GitHub Actions
+
+Create and automate Safe{Wallet} proposals and PR workflows.
+
+Welcome to SafeVault
+
+This exercise introduces you to GitHub Actions within a secure Safe{Wallet}-enabled dApp workflow. You’ll automate tasks like:
+	•	Proposing Safe transactions
+	•	Commenting on PRs
+	•	Triggering actions on GitHub label changes
+	•	Notifying via Discord or Telegram
+
+⸻
+
+👤 Who is this for?
+	•	Safe signers & project maintainers
+	•	Developers working on SafeVault dApps
+	•	Security engineers looking to streamline multisig + CI/CD
+
+⸻
+
+🧠 What you’ll learn
+	•	How to write & run GitHub Actions workflows
+	•	How to automate Safe{Wallet} operations via GitHub
+	•	How to connect proposals with pull requests
+	•	How to use Appkit or Slack webhooks for real-time updates
+
+⸻
+
+⚒️ What you’ll build
+
+A working GitHub Actions workflow that:
+	•	Watches pull requests
+	•	Adds Safe transaction metadata
+	•	Triggers proposal creation in Safe
+	•	Posts comments and Discord updates
+
+⸻
+
+✅ Prerequisites
+	•	GitHub repo access: Safe-app-eth/.SafeVault
+	•	Safe signer address: 0xAfD5f60aA8eb4F488eAA0eF98c1C5B0645D9A0A0
+	•	GitHub App installed (if applicable)
+	•	Appkit webhook:
+https://appkit-lab.reown.com/library/multichain-all/
+
+⸻
+
+⏱️ Duration
+
+This setup can be done in ~15–20 minutes if you’re familiar with GitHub workflows.
+
+⸻
+
+🧪 Steps
+	1.	Create .github/workflows/safe-pr-bot.yml
+	2.	Add a GitHub Action that:
+	•	Detects PRs
+	•	Fetches Safe owners
+	•	Checks threshold requirements
+	•	Proposes transaction via Reown/Safe API
+	•	Comments on PR with proposal link
+	•	Sends Discord alert
+
+⸻
+
+📁 Example Directory Structure
+
+.github/
+├── workflows/
+│   └── safe-pr-bot.yml
+│
+└── private/
+    ├── config/
+    │   └── safe.config.json
+    └── scripts/
+        └── createSafeProposal.ts
+
+💡 Tips
+	•	Use secrets.SAFE_SIGNER_PRIVATE_KEY or GitHub App token for secure signing
+	•	Store webhook URLs and Safe config in GitHub Secrets
+	•	Link workflows to labels like safe:propose to control execution
+	•	Test locally with act or in a test branch before merging to main
+
+⸻
+
+📎 Quick Start Workflow Link
+
+To bootstrap a copy of this setup into your org:
+Copy SafeVault GitHub Workflow Template →
+
+<details>
+<summary>Having issues? 🧩</summary><br/>
+
+Confirm your Safe address is correct
+	•	Ensure createSafeProposal.ts has execution permissions (chmod +x)
+	•	Confirm you’re using the correct GITHUB_TOKEN, Appkit_WEBHOOK_URL, and signer address
+	•	Check .github-private/scripts/ for logs
+</details>
+
+⸻
+
+© 2025 SafeVault • Security Policy • MIT License
+
+
+
+
