@@ -1,0 +1,8 @@
+name = "safevault"
+type = "javascript"
+
+[build]
+  command = "npm run build"
+  cwd = "."
+  upload_format = "directory"
+  upload_dir = "./dist"
