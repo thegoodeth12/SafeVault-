@@ -1,0 +1,9 @@
+{
+  "name": "SafeVault",
+  "description": "Governance, automation, and Safe{Wallet} tooling for multisig power users.",
+  "icons": ["https://thegoodeth.github.io/safevault/icon.png"],
+  "safeAppsSDKVersion": "1.4.1",
+  "provider": {
+    "url": "https://thegoodeth.github.io/safevault"
+  }
+}
