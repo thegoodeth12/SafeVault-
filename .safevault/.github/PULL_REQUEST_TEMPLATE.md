@@ -1,22 +1,28 @@
+# Make directory if it doesn't exist
+mkdir -p .github
+
+# Create the PR template file
+cat << 'EOF' > .github/PULL_REQUEST_TEMPLATE.md
 ### 📦 Summary
 
-Describe what this pull request does and why it matters.
+Provide a high-level summary of the changes in this pull request.  
+What feature, fix, or refactor is being introduced?
 
 ---
 
 ### ✅ What's Changed
 
-- Feature 1
-- Fix 2
-- Refactor 3
+- [ ] List key features, updates, or fixes
+- [ ] Example: Added `TransferAllAssets` component
+- [ ] Example: Fixed GitHub Actions permissions issue
 
 ---
 
-### 🔗 Preview
+### 🔗 Preview Deployment
 
-| Env | URL |
-|-----|-----|
-| Vercel | [Preview Link](https://your-vercel-preview.vercel.app) |
+| Environment | URL |
+|-------------|-----|
+| **Vercel**  | [Preview Link](https://reown-appkit-p3i5hjwoa-safewallet-pros-projects.vercel.app) |
 
 ---
 
@@ -24,17 +30,33 @@ Describe what this pull request does and why it matters.
 
 - [ ] Functionality verified locally
 - [ ] CI passes on GitHub Actions
-- [ ] Preview deploys without issue
+- [ ] AppKit sync behavior validated
+- [ ] Works across EVM chains (Ethereum, Arbitrum, Polygon)
 
 ---
 
-### 🔖 Related
+### 🔖 Related Issues
 
-Closes #
-Linked to #
+Closes #  
+Related to #  
+Generated from commit(s): `short-hash`
+
+---
+
+### 🔖 Badges
+
+![CI](https://github.com/thegoodeth/safevault/actions/workflows/ci.yml/badge.svg)  
+![Vercel](https://vercel.com/api/badges/reown-appkit/deploy-status.svg)
 
 ---
 
 ### 🙏 Thanks!
 
-> Keep building — SafeVault just got more secure 🔐
+> Keep SafeVault secure and scalable 🚀  
+> Every line of code moves us forward.
+EOF
+
+# Add, commit, and push to your branch
+git add .github/PULL_REQUEST_TEMPLATE.md
+git commit -m "📝 Add default pull request template for SafeVault"
+git push origin alert-autofix-27
