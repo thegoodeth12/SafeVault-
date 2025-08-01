@@ -1,4 +1,6 @@
 name: Deploy SafeVault to Vercel
+permissions:
+  contents: read
 
 on:
   push:
