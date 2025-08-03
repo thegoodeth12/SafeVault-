@@ -1,0 +1,43 @@
+import zipfile
+import os
+
+# Set up directories and files
+project_dir = "/mnt/data/SafeVaultDocs"
+docs_dir = os.path.join(project_dir, "docs")
+os.makedirs(docs_dir, exist_ok=True)
+
+# Create index.md with correct dashboard link
+index_md_content = """\
+# Welcome to SafeVault Docs
+
+[🔗 Launch Live Dashboard](https://safe-vault-f44t.vercel.app)
+
+This is the official documentation for the SafeVault project, providing secure, real-time tools for managing your Safe{Wallet} with confidence.
+"""
+
+with open(os.path.join(docs_dir, "index.md"), "w") as f:
+    f.write(index_md_content)
+
+# Create mkdocs.yml
+mkdocs_yml_content = """\
+site_name: SafeVault Documentation
+site_url: https://safe-app-eth.github.io/SafeVault-/
+repo_url: https://github.com/Safe-app-eth/SafeVault-
+nav:
+  - Home: index.md
+theme:
+  name: material
+"""
+
+with open(os.path.join(project_dir, "mkdocs.yml"), "w") as f:
+    f.write(mkdocs_yml_content)
+
+# Zip the project
+zip_path = "/mnt/data/SafeVaultDocs.zip"
+with zipfile.ZipFile(zip_path, "w") as zipf:
+    for root, _, files in os.walk(project_dir):
+        for file in files:
+            filepath = os.path.join(root, file)
+            zipf.write(filepath, os.path.relpath(filepath, project_dir))
+
+zip_path
