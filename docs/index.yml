@@ -1,0 +1,7 @@
+site_name: SafeVault Documentation
+site_url: https://safe-app-eth.github.io/SafeVault-/
+repo_url: https://github.com/Safe-app-eth/SafeVault-
+nav:
+  - Home: index.md
+theme:
+  name: material
