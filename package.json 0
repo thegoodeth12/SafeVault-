@@ -1,4 +1,5 @@
 {
+  "test": "jest"
   "name": "safevault",
   "version": "1.0.0",
   "description": "🔐 SafeVault — Your Secure Dashboard for Safe{Wallet}. View balances, manage owners, automate proposals, and integrate with GitHub + Discord.",
